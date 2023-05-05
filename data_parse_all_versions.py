@@ -3,16 +3,25 @@ import json
 
 from Weapon import Weapon
 
-response_versions = requests.get(
-    url="https://leanny.github.io/splat3/versions.json"
-)
+def setup():
+    response_versions = requests.get(
+        url="https://leanny.github.io/splat3/versions.json"
+    )
 
-all_verions_list: list = json.loads(response_versions.text)
+    global all_verions_list
+    all_verions_list = json.loads(response_versions.text)
 
-last_version: str = all_verions_list[-1]
+    global last_version
+    last_version = all_verions_list[-1]
+    
+    set_version_url(version=last_version)
+
+    global all_weapons
+    all_weapons = get_all_weapon_info()
 
 
-def set_version_url(version = last_version):
+
+def set_version_url(version):
     global latest_version_response
     latest_version_response= requests.get(
         url = f"https://leanny.github.io/splat3/data/mush/{version}/WeaponInfoMain.json"
@@ -23,7 +32,6 @@ def set_version_url(version = last_version):
     global last_data
     last_data= json.loads(latest_version_response.text)
 
-set_version_url()
 
 ban_word_list = [
     "Coop",
@@ -66,5 +74,4 @@ def get_all_weapon_info():
 
     return weapons_dict
 
-all_weapons = get_all_weapon_info()
 
