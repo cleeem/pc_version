@@ -33,7 +33,7 @@ class Weapon:
         self.base_type = data["__RowId"].split("_")[0]
         self.type_translate = self.switch_weapon_type.get(data["__RowId"].split("_")[0], None)
 
-        self.image_url = f"{self.ROOT_URL_IMAGES}/weapon_flat/Path_Wst_{data['__RowId']}.png"
+        self.image_url = f"{self.ROOT_URL_IMAGES}/badge/Badge_WeaponLevel_{data['__RowId']}_Lv00.png"
         # print(self.image_url)
 
         sp_wp: str = data["SpecialWeapon"]

@@ -7,24 +7,10 @@ import customtkinter
 
 import data_parse_all_versions
 
-directory_names = [
-    "Blaster",
-    "Brush",
-    "Charger",
-    "Maneuver",
-    "Roller",
-    "Saber",
-    "Shelter",
-    "Shooter",
-    "Slosher",
-    "Spinner",
-    "Stringer",
-    "subs_specials"
-]
 
 def dl_image(file_name, url):
-    if not exists(f"assets/{file_name}.png"):
-        with open(f"assets/{file_name}.png", 'wb') as file:
+    if not exists(f"assets_badges/{file_name}.png"):
+        with open(f"assets_badges/{file_name}.png", 'wb') as file:
             file.write(requests.get(url=url).content)   
 
 def update_weapons(barre: customtkinter.CTkProgressBar, label: customtkinter.CTkLabel):
@@ -35,7 +21,7 @@ def update_weapons(barre: customtkinter.CTkProgressBar, label: customtkinter.CTk
     lenght = len(weapon_dict)
 
     for name, weapon in weapon_dict.items():
-        complete_name = f"{weapon.base_type}/{name}"
+        complete_name = f"{name}"
         dl_image(file_name=complete_name, url=weapon.image_url)
         # print(f"download weapons : {i}/{lenght}", end="\r")
         i += 1
@@ -54,7 +40,7 @@ def update_subs_specials(barre: customtkinter.CTkProgressBar, label: customtkint
     lenght = len(weapon_dict)
 
     for name, url in weapon_dict.items():
-        complete_name = f"subs_specials/{name}"
+        complete_name = f"{name}"
         dl_image(file_name=complete_name, url=url)
         # print(f"download subs and spacials : {i}/{lenght}", end="\r")
         i += 1

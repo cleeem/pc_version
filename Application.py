@@ -34,6 +34,123 @@ class Application(customtkinter.CTk):
     BUTTON_HEIGHT = 100
     WIDTH_PARAM_BUTTON = 500
 
+    real_to_data = {
+        'H-3 Nozzlenose' : 'Shooter_TripleMiddle',
+        'L-3 Nozzlenose' : 'Shooter_TripleQuick',
+        'L-3 Nozzlenose D' : 'Shooter_TripleQuick_01',
+        'Aerospray MG' : 'Shooter_Blaze',
+        'Aerospray RG' : 'Shooter_Blaze_01',
+        'Splattershot Pro' : 'Shooter_Expert',
+        'Forge Splattershot Pro' : 'Shooter_Expert_01',
+        'Splattershot Jr.' : 'Shooter_First',
+        'Custom Splattershot Jr.' : 'Shooter_First_01',
+        'Squeezer' : 'Shooter_Flash',
+        '.52 Gal' : 'Shooter_Gravity',
+        '.96 Gal' : 'Shooter_Heavy',
+        '.96 Gal Deco' : 'Shooter_Heavy_01',
+        'Jet Squelcher' : 'Shooter_Long',
+        'Custom Jet Squelcher' : 'Shooter_Long_01',
+        'Splattershot' : 'Shooter_Normal',
+        'Tentatek Splattershot' : 'Shooter_Normal_01',
+        'Hero Shot Replica' : 'Shooter_Normal_H',
+        'Splash-o-matic' : 'Shooter_Precision',
+        'Neo Splash-o-matic' : 'Shooter_Precision_01',
+        'Splattershot Nova' : 'Shooter_QuickLong',
+        'N-ZAP 85' : 'Shooter_QuickMiddle',
+        'N-ZAP 89' : 'Shooter_QuickMiddle_01',
+        'Sploosh-o-matic' : 'Shooter_Short',
+        'Neo Sploosh-o-matic' : 'Shooter_Short_01',
+        'Splatana Stamper' : 'Saber_Normal',
+        'Splatana Wiper' : 'Saber_Lite',
+        'Rapid Blaster' : 'Blaster_Light',
+        'Rapid Blaster Deco' : 'Blaster_Light_01',
+        'Rapid Blaster Pro' : 'Blaster_LightLong',
+        'Clash Blaster' : 'Blaster_LightShort',
+        'Clash Blaster Neo' : 'Blaster_LightShort_01',
+        'Range Blaster' : 'Blaster_Long',
+        'Blaster' : 'Blaster_Middle',
+        'Luna Blaster' : 'Blaster_Short',
+        'Luna Blaster Neo' : 'Blaster_Short_01',
+        'Inkbrush' : 'Brush_Mini',
+        'Inkbrush Nouveau' : 'Brush_Mini_01',
+        'Octobrush' : 'Brush_Normal',
+        'Goo Tuber' : 'Charger_Keeper',
+        'Classic Squiffer' : 'Charger_Light',
+        'E-liter 4K' : 'Charger_Long',
+        'E-liter 4K Scope' : 'Charger_LongScope',
+        'Splat Charger' : 'Charger_Normal',
+        'Z+F Splat Charger' : 'Charger_Normal_01',
+        'Splatterscope' : 'Charger_NormalScope',
+        'Z+F Splatterscope' : 'Charger_NormalScope_01',
+        'Snipewriter 5H' : 'Charger_Pencil',
+        'Bamboozler 14 Mk I' : 'Charger_Quick',
+        'Dualie Squelchers' : 'Maneuver_Dual',
+        'Splat Dualies' : 'Maneuver_Normal',
+        'Dapple Dualies' : 'Maneuver_Short',
+        'Dapple Dualies Nouveau' : 'Maneuver_Short_01',
+        'Dark Tetra Dualies' : 'Maneuver_Stepper',
+        'Glooga Dualies' : 'Maneuver_Gallon',
+        'Carbon Roller' : 'Roller_Compact',
+        'Carbon Roller Deco' : 'Roller_Compact_01',
+        'Dynamo Roller' : 'Roller_Heavy',
+        'Flingza Roller' : 'Roller_Hunter',
+        'Splat Roller' : 'Roller_Normal',
+        'Krak-On Splat Roller' : 'Roller_Normal_01',
+        'Big Swig Roller' : 'Roller_Wide',
+        'Tri-Stringer' : 'Stringer_Normal',
+        'REEF-LUX 450' : 'Stringer_Short',
+        'Undercover Brella' : 'Shelter_Compact',
+        'Splat Brella' : 'Shelter_Normal',
+        'Tenta Brella' : 'Shelter_Wide',
+        'Bloblobber' : 'Slosher_Bathtub',
+        'Tri-Slosher' : 'Slosher_Diffusion',
+        'Tri-Slosher Nouveau' : 'Slosher_Diffusion_01',
+        'Sloshing Machine' : 'Slosher_Launcher',
+        'Slosher' : 'Slosher_Strong',
+        'Slosher Deco' : 'Slosher_Strong_01',
+        'Explosher' : 'Slosher_Washtub',
+        'Mini Splatling' : 'Spinner_Quick',
+        'Zink Mini Splatling' : 'Spinner_Quick_01',
+        'Ballpoint Splatling' : 'Spinner_Downpour',
+        'Hydra Splatling' : 'Spinner_Hyper',
+        'Nautilus 47' : 'Spinner_Serein',
+        'Heavy Splatling' : 'Spinner_Standard',
+    }
+    
+    subs_specials_to_data = {
+        'Killer Wail 5.1' : 'SpMicroLaser',
+        'Tenta Missiles' : 'SpMultiMissile',
+        'Booyah Bomb' : 'SpNiceBall',
+        'Wave Breaker' : 'SpShockSonar',
+        'Reefslider' : 'SpSkewer',
+        'Zipcaster' : 'SpSuperHook',
+        'Triple Inkstrike' : 'SpTripleTornado',
+        'Trizooka' : 'SpUltraShot',
+        'Ultra Stamp' : 'SpUltraStamp',
+        'Ink Vac' : 'SpBlower',
+        'Kraken Royale' : 'SpCastle',
+        'Crab Tank' : 'SpChariot',
+        'Tacticooler' : 'SpEnergyStand',
+        'Super Chump' : 'SpFirework',
+        'Big Bubbler' : 'SpGreatBarrier',
+        'Ink Storm' : 'SpInkStorm',
+        'Inkjet' : 'SpJetpack',
+        'Squid Beakon' : 'Beacon',
+        'Splat Bomb' : 'Bomb_Splash',
+        'Suction Bomb' : 'Bomb_Suction',
+        'Torpedo' : 'Bomb_Torpedo',
+        'Angle Shooter' : 'LineMarker',
+        'Splash Wall' : 'Shield',
+        'Sprinkler' : 'Sprinkler',
+        'Ink Mine' : 'Trap',
+        'Curling Bomb' : 'Bomb_Curling',
+        'Fizzy Bomb' : 'Bomb_Fizzy',
+        'Burst Bomb' : 'Bomb_Quick',
+        'Autobomb' : 'Bomb_Robot',
+        'Toxic Mist' : 'PoisonMist',
+        'Point Sensor' : 'PointSensor',
+    }
+
 
     def __init__(self):
         super().__init__()
@@ -88,7 +205,7 @@ class Application(customtkinter.CTk):
         for img in images:
             new_height += img.height
 
-        new_image = Image.new('RGB', (images[0].width, new_height))
+        new_image = Image.new('RGB', (images[0].width, new_height), color="#FFFFFF")
 
         temp_height=0
         for img in images:
@@ -101,7 +218,7 @@ class Application(customtkinter.CTk):
         for img in images:
             new_width += img.width
 
-        new_image = Image.new('RGB', (new_width, images[0].height))
+        new_image = Image.new('RGB', (new_width, images[0].height), color="#FFFFFF")
 
         temp_width=0
         for img in images:
@@ -286,7 +403,6 @@ class Application(customtkinter.CTk):
         self.row_column_configure_frame(self.ennemy_p3)
         self.row_column_configure_frame(self.ennemy_p4)
 
-
     def check_configuration(self):
         return os.path.exists("config.txt")
     
@@ -304,12 +420,12 @@ class Application(customtkinter.CTk):
         return customtkinter.CTkImage(Image.open(os.path.join(path)), size=(x, y))
 
     def load_pil_image(self, path):
-        return Image.open(path)
+        return Image.open(path).convert("RGBA").resize((64,64), Image.ANTIALIAS)
 
     def convert_image(self, img, x=128, y=128):
         return customtkinter.CTkImage(img, size=(x, y))
 
-    def get_player(self, player: Splatoon3Player):
+    def get_player_stuff(self, player: Splatoon3Player):
 
         head_gear_list = []
         clothing_gear_list = []
@@ -338,17 +454,50 @@ class Application(customtkinter.CTk):
 
         return total
 
-    def display_data(self, game_data: Splatoon3Game):
-        p1 = game_data.players["myTeam"].player_list[1]
+    def display_player(self, player: Splatoon3Player, frame):
 
-        image_stuff = self.get_player(p1)
+        player_text = f"{player.name} \n{player.kill_w_assist}({player.assist_count}) / {player.death_count} / {player.special_count} \n{player.turf_point} pts"
 
-        label_test = customtkinter.CTkLabel(
-            master=self.my_team_p1,
+        name_label = customtkinter.CTkLabel(
+            master=frame,
+            text=player_text,
+            font=self.FONT_LABEL
+        )
+        name_label.grid(
+            row=1, column=2,
+            sticky="nsew"
+        )
+
+        main_weapon     = self.real_to_data[player.main_weapon]
+        sub_weapon      = self.subs_specials_to_data[player.sub_weapon]
+        special_weapon  = self.subs_specials_to_data[player.special_weapon]
+
+        main_weapon_image = self.load_pil_image(f"assets/{main_weapon}.png")
+        sub_weapon_image = self.load_pil_image(f"assets/{sub_weapon}.png")
+        special_weapon_image = self.load_pil_image(f"assets/{special_weapon}.png")
+
+        weapons = self.get_concat_h([main_weapon_image, sub_weapon_image, special_weapon_image])
+        weapons.show()
+
+        image_stuff = self.get_player_stuff(player)
+
+        label_stuff = customtkinter.CTkLabel(
+            master=frame,
             text="",
             image=self.convert_image(image_stuff, x=120, y=90)
         )
-        label_test.grid(row=1, column=2)
+        label_stuff.grid(row=3, column=2)
+
+    def display_data(self, game_data: Splatoon3Game):
+        self.display_player(game_data.players["myTeam"].player_list[0], self.my_team_p1)
+        self.display_player(game_data.players["myTeam"].player_list[1], self.my_team_p2)
+        self.display_player(game_data.players["myTeam"].player_list[2], self.my_team_p3)
+        self.display_player(game_data.players["myTeam"].player_list[3], self.my_team_p4)
+
+        self.display_player(game_data.players["ennemy"].player_list[0], self.ennemy_p1)
+        self.display_player(game_data.players["ennemy"].player_list[1], self.ennemy_p2)
+        self.display_player(game_data.players["ennemy"].player_list[2], self.ennemy_p3)
+        self.display_player(game_data.players["ennemy"].player_list[3], self.ennemy_p4)
 
 
     def last_game_callback(self):
@@ -392,10 +541,6 @@ class Application(customtkinter.CTk):
     def callback_update_assets(self):
 
         self.configure_frames()
-
-        for directory in dl_maps_weapons.directory_names:
-            if not os.path.isdir(f"assets/{directory}"):
-                os.mkdir(f"assets/{directory}")
 
         # labels
         self.label_weapons = customtkinter.CTkLabel(
