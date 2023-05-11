@@ -347,20 +347,23 @@ def fetch_json(which, separate=False, exportall=False, specific=False, numbers_o
 			return combined
 
 
-def fetch_and_upload_single_result(hash, noun):
+def fetch_and_upload_single_result(hash, noun, dict_key):
 	'''Performs a GraphQL request for a single vsResultId/coopHistoryDetailId and call post_result().'''
 
 	if noun in ("battles", "battle"):
-		dict_key  = "VsHistoryDetailQuery"
-		dict_key2 = "vsResultId"
+		if dict_key == "VsHistoryDetailQuery":
+			dict_key2 = "vsResultId"
+			key3 = hash
+		else:
+			dict_key2 = "id"
+			with open("pid.txt") as file:
+				key3=file.read()
+
 		lang = None
-	else: # noun == "jobs" or "job"
-		dict_key  = "CoopHistoryDetailQuery"
-		dict_key2 = "coopHistoryDetailId"
-		lang = 'en-US'
+	
 
 	result_post = requests.post(utils.GRAPHQL_URL,
-			data=utils.gen_graphql_body(utils.translate_rid[dict_key], dict_key2, hash),
+			data=utils.gen_graphql_body(utils.translate_rid[dict_key], dict_key2, key3),
 			headers=headbutt(forcelang=lang),
 			cookies=dict(_gtoken=GTOKEN))
 	try:
@@ -484,7 +487,7 @@ def parse_arguments():
 	return parser.parse_args()
 
 
-def main(game_index = 1, use_account=""):
+def main(game_index = 1, use_account="", dict_key=""):
 	'''Main process, including I/O and setup.'''
 
 	global user_account
@@ -515,11 +518,11 @@ def main(game_index = 1, use_account=""):
 
 	# for hash in results:
 		
-	return_list.append(fetch_and_upload_single_result(results[n], noun)) # not monitoring mode
+	return_list.append(fetch_and_upload_single_result(results[n], noun, dict_key)) # not monitoring mode
 
 	thread_pool.shutdown(wait=True)
 
-	return return_list[0]["data"]["vsHistoryDetail"]
+	return return_list[0]
 
 
 # if __name__ == "__main__":

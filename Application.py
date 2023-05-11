@@ -27,7 +27,7 @@ class Application(customtkinter.CTk):
     
     FONT_TITLE = ("Roboto Medium", 30) 
     FONT_BUTTON = ("Roboto Medium", 15) 
-    FONT_LABEL = ("Roboto Medium", 20) 
+    FONT_LABEL = ("Roboto Medium", 18) 
     
     GAME_COLOR_FRAME = "#555555"
 
@@ -83,29 +83,27 @@ class Application(customtkinter.CTk):
         )
 
     def get_concat_v(self, images: list):
-        new_height = 0
-        for img in images:
-            new_height += img.height
+        new_height = 64*len(images)
 
-        new_image = Image.new('RGB', (images[0].width, new_height), color="#FFFFFF")
+        new_image = Image.new('RGBA', (images[0].width, new_height))
 
         temp_height=0
         for img in images:
             new_image.paste(img, (0, temp_height))
-            temp_height += img.height
+            temp_height += 64
+
         return new_image
     
     def get_concat_h(self, images: list):
-        new_width = 0
-        for img in images:
-            new_width += img.width
+        new_width = 64*len(images)
 
-        new_image = Image.new('RGB', (new_width, images[0].height), color="#FFFFFF")
+        new_image = Image.new('RGBA', (new_width, images[0].height))
 
         temp_width=0
         for img in images:
             new_image.paste(img, (temp_width, 0))
-            temp_width += img.width
+            temp_width += 64
+        
         return new_image
 
     def configure_frames(self):
@@ -209,7 +207,7 @@ class Application(customtkinter.CTk):
         )
         self.game_frame.grid(
             row=2, column=1, sticky="nsew",
-            padx=10, pady=10,
+            padx=10, #pady=10,
             columnspan=3
         )
 
@@ -231,8 +229,8 @@ class Application(customtkinter.CTk):
         self.ennemy_team_frame.columnconfigure(3, minsize=10)
 
         self.game_frame.rowconfigure(0, minsize=10)
-        self.game_frame.rowconfigure((1,2,3), weight=1)
-        self.game_frame.rowconfigure(4, minsize=10)
+        self.game_frame.rowconfigure((1), weight=1)
+        self.game_frame.rowconfigure(2, minsize=10)
 
         self.game_frame.columnconfigure(0, minsize=10)
         self.game_frame.columnconfigure((1,2,3), weight=1)
@@ -289,14 +287,14 @@ class Application(customtkinter.CTk):
         )
         self.invalid_config_label.grid(row=2, column=2, padx=10, pady=10)        
 
-    def load_ctk_image(self, path, x=25, y=25):
+    def load_ctk_image(self, path, x=40, y=40):
         """ load rectangular image with path relative to PATH """
         return customtkinter.CTkImage(Image.open(os.path.join(path)), size=(x, y))
 
     def load_pil_image(self, path):
         return Image.open(path).convert("RGBA")
 
-    def convert_image(self, img, x=50, y=50):
+    def convert_image(self, img, x=40, y=40):
         return customtkinter.CTkImage(img, size=(x, y))
 
     def get_player_stuff(self, player: Splatoon3Player):
@@ -306,17 +304,14 @@ class Application(customtkinter.CTk):
         shoes_gear_list = []
 
         for bonus in player.head_gear_abilities:
-            bonus = bonus.replace(" ", "_")
             path = f"bonus/{bonus}.png"
             head_gear_list.append(self.load_pil_image(path)) 
         
         for bonus in player.clothing_gear_abilities:
-            bonus = bonus.replace(" ", "_")
             path = f"bonus/{bonus}.png"
             clothing_gear_list.append(self.load_pil_image(path)) 
 
         for bonus in player.shoes_gear_abilities:
-            bonus = bonus.replace(" ", "_")
             path = f"bonus/{bonus}.png"
             shoes_gear_list.append(self.load_pil_image(path)) 
         
@@ -346,33 +341,19 @@ class Application(customtkinter.CTk):
         sub_weapon      = player.sub_weapon
         special_weapon  = player.special_weapon
 
-        main_weapon_image = self.convert_image(self.load_pil_image(f"assets/{main_weapon}.png"))
-        sub_weapon_image = self.convert_image(self.load_pil_image(f"assets/{sub_weapon}.png"))
-        special_weapon_image = self.convert_image(self.load_pil_image(f"assets/{special_weapon}.png"))
+        main_weapon_image = self.load_pil_image(f"assets/{main_weapon}.png")
+        sub_weapon_image = self.load_pil_image(f"assets/{sub_weapon}.png")
+        special_weapon_image = self.load_pil_image(f"assets/{special_weapon}.png")
 
-        # weapons = self.get_concat_h([main_weapon_image, sub_weapon_image, special_weapon_image])
+        weapons = self.get_concat_h([main_weapon_image, sub_weapon_image, special_weapon_image])
         # weapons.show()
 
         label_weapon = customtkinter.CTkLabel(
             master=frame,
             text="",
-            image=main_weapon_image
+            image=self.convert_image(weapons, x=120, y=40)
         )
-        label_weapon.grid(row=2, column=1)
-
-        label_sub = customtkinter.CTkLabel(
-            master=frame,
-            text="",
-            image=sub_weapon_image
-        )
-        label_sub.grid(row=2, column=2)
-
-        label_specials = customtkinter.CTkLabel(
-            master=frame,
-            text="",
-            image=special_weapon_image
-        )
-        label_specials.grid(row=2, column=3)
+        label_weapon.grid(row=2, column=2)
 
 
         image_stuff = self.get_player_stuff(player)
@@ -408,8 +389,16 @@ Score : {score}
             text=game_res,
             font=self.FONT_LABEL,
         )
-        label_result.grid(row=2, column=2)
+        label_result.grid(row=1, column=1)
 
+        map_image = self.load_ctk_image(f"map/{game_data.stage}.png", x=200, y=100)
+
+        label_map = customtkinter.CTkLabel(
+            master=self.game_frame,
+            text="",
+            image=map_image,
+        )
+        label_map.grid(row=1, column=2)
 
     def display_data(self, game_data: Splatoon3Game):
         self.display_player(game_data.players["myTeam"].player_list[0], self.my_team_p1)
@@ -445,7 +434,7 @@ Score : {score}
 
             self.update()
 
-            game_data = Splatoon3Game(s3s.main(game_index=2))
+            game_data = Splatoon3Game(s3s.main(game_index=2, dict_key="VsHistoryDetailQuery")["data"]["vsHistoryDetail"])
 
             label_loading.destroy()
 
@@ -523,7 +512,7 @@ Score : {score}
 
                 label_ok = customtkinter.CTkLabel(
                     master=self.game_frame,
-                    text="configuration written succesfuly",
+                    text="configuration written succesfuly, now getting you player id",
                     font=self.FONT_TITLE
                 )
                 label_ok.grid(
@@ -531,8 +520,16 @@ Score : {score}
                     sticky="nsew",
                     columnspan=3
                 )
+                self.update()
+
+                pid = s3s.main(dict_key="VsHistoryDetailQuery")["data"]["vsHistoryDetail"]["player"]["id"]
+                # print(pid)
+                with open("pid.txt", "w") as file:
+                    file.write(pid)
+
             
-            except:
+            except Exception:
+                
                 label_error = customtkinter.CTkLabel(
                     master=self.game_frame,
                     text="an error has occured while doing the configuration, \nPlease try again later ",
@@ -558,10 +555,8 @@ Score : {score}
             rowspan=2, columnspan=2
         )
 
-        
-
         print("setup")
-        #TODO gérer le systeme avec les tokens 💀
+
 
 
     def on_closing(self, event=0):
