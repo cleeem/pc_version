@@ -28,6 +28,7 @@ class Application(customtkinter.CTk):
     FONT_TITLE = ("Roboto Medium", 30) 
     FONT_BUTTON = ("Roboto Medium", 15) 
     FONT_LABEL = ("Roboto Medium", 18) 
+    BIG_FONT = ("Roboto Medium", 23)
     
     GAME_COLOR_FRAME = "#555555"
 
@@ -58,27 +59,25 @@ class Application(customtkinter.CTk):
 
         self.welcome_label = customtkinter.CTkLabel(
             master=self.right_frame,
-            text="Welcome on splatnet3 for PC \n \nif this is your first time using the application, \nplease check the setup menu",
+            text="Welcome to splatnet3 for PC \n \nif this is your first time using the application, \nplease check the setup menu",
             font=self.FONT_TITLE,
             justify=tkinter.LEFT
         )
         self.welcome_label.grid(
-            row=1, column=2,
+            row=1, column=4,
             sticky="nsew"
         )
 
         self.other_menu = customtkinter.CTkLabel(
             master=self.right_frame,
             text="Other menus available : \n\n \
-    - last game : shows the last game you've played \n \
-    - game (index) : select a game to see (from 1 to 50) \n \
-    - setup : to setup the configuration required to use the app \n \
-    - update assets : update all the game assets to latest version",
+- last game : shows the last game you've played \n \
+- setup : to setup the configuration required to use the app  ",
             font=self.FONT_LABEL,
             justify=tkinter.LEFT
         )
         self.other_menu.grid(
-            row=2, column=2,
+            row=2, column=4,
             sticky="nsew",
         )
 
@@ -138,8 +137,8 @@ class Application(customtkinter.CTk):
 
         # right frame configuration
         self.right_frame.columnconfigure(0, minsize=10)
-        self.right_frame.columnconfigure((1,2), weight=1)
-        self.right_frame.columnconfigure(3, minsize=10)
+        self.right_frame.columnconfigure((1,2,3,4,5,6,7), weight=1)
+        self.right_frame.columnconfigure(8, minsize=10)
 
         self.right_frame.rowconfigure(0, minsize=10)
         self.right_frame.rowconfigure((1,2), weight=1)
@@ -155,15 +154,7 @@ class Application(customtkinter.CTk):
             height=self.BUTTON_HEIGHT,
         )
         self.last_game_button.grid(row=0, column=0, pady=10, padx=20)
-        
-        self.choose_game_button = customtkinter.CTkButton(
-            master=self.left_frame,
-            text="game (index)",
-            font=self.FONT_BUTTON,
-            command=self.choose_game_callback,
-            height=self.BUTTON_HEIGHT,
-        )
-        self.choose_game_button.grid(row=1, column=0, pady=10, padx=20)
+    
 
         self.setup_button = customtkinter.CTkButton(
             master=self.left_frame,
@@ -191,14 +182,20 @@ class Application(customtkinter.CTk):
             fg_color=self.GAME_COLOR_FRAME,
             corner_radius=self.CORNER_RADIUS
         )
-        self.my_team_frame.grid(row=1, column=1, sticky="nsew", padx=10, pady=10)
+        self.my_team_frame.grid(row=2, column=1, 
+                sticky="nsew", 
+                padx=10, pady=10,
+                columnspan=3)
 
         self.ennemy_team_frame = customtkinter.CTkFrame(
             master=self.right_frame,
             fg_color=self.GAME_COLOR_FRAME,
             corner_radius=self.CORNER_RADIUS
         )
-        self.ennemy_team_frame.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
+        self.ennemy_team_frame.grid(row=2, column=4, 
+                sticky="nsew", 
+                padx=10, pady=10,
+                columnspan=3)
 
         self.game_frame = customtkinter.CTkFrame(
             master=self.right_frame,
@@ -206,9 +203,9 @@ class Application(customtkinter.CTk):
             corner_radius=self.CORNER_RADIUS
         )
         self.game_frame.grid(
-            row=2, column=1, sticky="nsew",
-            padx=10, #pady=10,
-            columnspan=3
+            row=1, column=2, sticky="nsew",
+            padx=10, pady=10,
+            columnspan=4
         )
 
         # Team frames configuration
@@ -365,7 +362,7 @@ class Application(customtkinter.CTk):
         )
         label_stuff.grid(row=3, column=1, columnspan=3)
 
-    def display_result(self, game_data: Splatoon3Game):
+    def display_result(self, game_data: Splatoon3Game, game_id):
         if game_data.players["myTeam"].win_or_lose == "LOSE" and game_data.players["myTeam"].score != "draw":
             score = f"Ennemy Team won ({game_data.players['myTeam'].score} - {game_data.players['ennemy'].score})" 
 
@@ -375,32 +372,27 @@ class Application(customtkinter.CTk):
         else:
             score = "DRAW"
 
+        if game_data.last_X_power != 0:
+            x_power = f"last X power : {game_data.last_X_power}"
+        else:
+            x_power = "\r"
+
         game_res = \
 f"""
-Score : {score}
+GAME n°{game_id}
+{score}
 {game_data.vs_rule} on {game_data.stage} 
 {SpUtils.epoch_time(str(game_data.game_date))} ({game_data.duration})
+{x_power}"""
 
-{f"last X power : {game_data.last_X_power}" if game_data.last_X_power != 0 else ""}
-"""
-
-        label_result = customtkinter.CTkLabel(
+        self.label_result = customtkinter.CTkLabel(
             master=self.game_frame,
             text=game_res,
             font=self.FONT_LABEL,
         )
-        label_result.grid(row=1, column=1)
+        self.label_result.grid(row=1, column=2)
 
-        map_image = self.load_ctk_image(f"map/{game_data.stage}.png", x=200, y=100)
-
-        label_map = customtkinter.CTkLabel(
-            master=self.game_frame,
-            text="",
-            image=map_image,
-        )
-        label_map.grid(row=1, column=2)
-
-    def display_data(self, game_data: Splatoon3Game):
+    def display_data(self, game_data: Splatoon3Game, game_id):
         self.display_player(game_data.players["myTeam"].player_list[0], self.my_team_p1)
         self.display_player(game_data.players["myTeam"].player_list[1], self.my_team_p2)
         self.display_player(game_data.players["myTeam"].player_list[2], self.my_team_p3)
@@ -412,13 +404,24 @@ Score : {score}
         self.display_player(game_data.players["ennemy"].player_list[3], self.ennemy_p4)
 
 
-        self.display_result(game_data)
+        self.display_result(game_data, game_id)
 
-    def last_game_callback(self):
-        self.configure_frames()
-        self.configure_player_frames()
-        
+    def get_game_data(self, game_id):
+        try:
+            pulled_data = s3s.main(game_index=game_id, dict_key="VsHistoryDetailQuery")
+            return Splatoon3Game(pulled_data["data"]["vsHistoryDetail"])
+        except: # Connection Error
+            self.label_connection_erreor = customtkinter.CTkLabel(
+                master=self.game_frame,
+                text="Could not connect to Internet, please check your connection",
+                font=self.FONT_LABEL
+            )
+            self.label_connection_erreor.grid(
+                row=1, column=2
+            )
 
+
+    def load_data(self, game_id):
         if not self.check_configuration():
             self.invalid_config()
 
@@ -434,27 +437,74 @@ Score : {score}
 
             self.update()
 
-            game_data = Splatoon3Game(s3s.main(game_index=2, dict_key="VsHistoryDetailQuery")["data"]["vsHistoryDetail"])
+            game_data = self.get_game_data(game_id)
 
             label_loading.destroy()
 
-            self.display_data(game_data)
+            self.display_data(game_data, game_id)
+
+    def last_game_callback(self, game_id=1):
+        self.configure_frames()
+        self.configure_player_frames()
 
 
+        def change_game():
+            self.label_result.destroy()
+            game_id = int(self.game_id_entry.get())
+            if game_id <= 0:
+                game_id = 1
+            elif game_id >= 50:
+                game_id = 50
+            else:
+                game_id = game_id
+
+            self.load_data(game_id)
+            
+
+        self.frame_chose_game = customtkinter.CTkFrame(
+            master=self.right_frame,
+            corner_radius=self.CORNER_RADIUS,
+            # height=200
+        )
+        self.frame_chose_game.grid(row=1, column=6, sticky="ns", pady=10)
+
+        self.frame_chose_game.rowconfigure(0, minsize=10)
+        self.frame_chose_game.rowconfigure((1,2), weight=1)
+        self.frame_chose_game.rowconfigure(3, minsize=10)
+
+        self.frame_chose_game.columnconfigure(0, minsize=10)
+        self.frame_chose_game.columnconfigure((1), weight=1)
+        self.frame_chose_game.columnconfigure(3, minsize=10)
+
+        self.game_id_entry = customtkinter.CTkEntry(
+            self.frame_chose_game,
+            fg_color="#444444",
+            font=self.FONT_LABEL,
+            text_color="#FFFFFF",
+            placeholder_text_color="#FFFFFF",
+            placeholder_text="1-50",
+            justify = tkinter.CENTER
+        )
+        self.game_id_entry.grid(row=1, column=1)
+
+        self.search_button = customtkinter.CTkButton(
+            master=self.frame_chose_game,
+            text="confirm",
+            font=self.FONT_BUTTON,
+            command=change_game,
+        )
+        self.search_button.grid(row=2, column=1)
+        
+        self.load_data(game_id)
 
         print("last game")
 
-    def choose_game_callback(self):
-        self.configure_frames()
-
-        if not self.check_configuration():
-            self.invalid_config()
-
-        print("choose game")
-
     def setup_callback(self):
         self.configure_frames()
-        
+
+        self.game_frame.grid(row=1, column=1, columnspan=6)
+        self.update()
+
         s3s.setup()
 
         url_login, auth_code = iksm.get_login_url(s3s.APP_USER_AGENT)
