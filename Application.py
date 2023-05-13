@@ -504,8 +504,6 @@ GAME n°{game_id}
         else:
             self.previous_game_button.configure(state="enabled")
 
-        print(self.game_id)
-
         self.update()
 
     def last_game_callback(self):
