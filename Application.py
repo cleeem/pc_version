@@ -192,7 +192,7 @@ class Application(customtkinter.CTk):
             fg_color=self.GAME_COLOR_FRAME,
             corner_radius=self.CORNER_RADIUS
         )
-        self.ennemy_team_frame.grid(row=2, column=4, 
+        self.ennemy_team_frame.grid(row=2, column=5, 
                 sticky="nsew", 
                 padx=10, pady=10,
                 columnspan=3)
@@ -200,12 +200,12 @@ class Application(customtkinter.CTk):
         self.game_frame = customtkinter.CTkFrame(
             master=self.right_frame,
             fg_color=self.GAME_COLOR_FRAME,
-            corner_radius=self.CORNER_RADIUS
+            corner_radius=self.CORNER_RADIUS,
         )
         self.game_frame.grid(
-            row=1, column=2, sticky="nsew",
+            row=1, column=2, sticky="ew",
             padx=10, pady=10,
-            columnspan=4
+            columnspan=5
         )
 
         # Team frames configuration
@@ -420,53 +420,125 @@ GAME n°{game_id}
                 row=1, column=2
             )
 
-
-    def load_data(self, game_id):
+    def load_data(self):
         if not self.check_configuration():
             self.invalid_config()
 
         else:
+
             label_loading = customtkinter.CTkLabel(
                 master=self.game_frame,
                 text="loading data, it may take some time",
                 font=self.FONT_LABEL
             )
             label_loading.grid(
-                row=1, column=2
+                row=1, column=2, sticky="nsew"
             )
 
             self.update()
 
-            game_data = self.get_game_data(game_id)
+            game_data = self.get_game_data(self.game_id)
 
             label_loading.destroy()
 
-            self.display_data(game_data, game_id)
+            self.display_data(game_data, self.game_id)
 
-    def last_game_callback(self, game_id=1):
+    def previous_game(self):
+        if not self.game_id >= 50:
+            try:
+                self.label_result.destroy()
+            except:
+                pass
+            self.game_id += 1
+
+            self.load_data()
+
+        self.create_next_previous()
+        
+        self.update()
+
+    def next_game(self):
+        if not self.game_id <=1:
+            try:
+                self.label_result.destroy()
+            except:
+                pass
+            self.game_id -= 1
+
+            self.load_data()
+            
+        self.create_next_previous()
+
+        self.update()
+
+    def create_next_previous(self):
+        try:
+            self.next_game_button.destroy()
+            self.previous_game_button.destroy()
+        except:
+            pass
+
+        self.next_game_button = customtkinter.CTkButton(
+            master=self.next_previous_frame,
+            text="load next game",
+            font=self.FONT_BUTTON,
+            command=self.next_game,
+        )
+        self.next_game_button.grid(row=1, column=1, padx=10, pady=10)
+
+        self.previous_game_button = customtkinter.CTkButton(
+            master=self.next_previous_frame,
+            text="load previous game",
+            font=self.FONT_BUTTON,
+            command=self.previous_game,
+        )
+        self.previous_game_button.grid(row=2, column=1, padx=10, pady=10)
+
+        if self.game_id <= 1:
+            self.next_game_button.configure(state="disabled")
+        else:
+            self.next_game_button.configure(state="enabled")
+
+        if self.game_id >= 50:
+            self.previous_game_button.configure(state="disabled")
+        else:
+            self.previous_game_button.configure(state="enabled")
+
+        print(self.game_id)
+
+        self.update()
+
+    def last_game_callback(self):
         self.configure_frames()
         self.configure_player_frames()
 
+        self.game_id = 0
 
         def change_game():
-            self.label_result.destroy()
-            game_id = int(self.game_id_entry.get())
-            if game_id <= 0:
-                game_id = 1
-            elif game_id >= 50:
-                game_id = 50
-            else:
-                game_id = game_id
+            try:
+                self.label_result.destroy()
+            except:
+                pass
 
-            self.load_data(game_id)
-            
+            game_id_temp = int(self.game_id_entry.get())
+            if game_id_temp <= 0:
+                game_id_temp = 1
 
+            elif game_id_temp >= 50:
+                game_id_temp = 50
+
+            self.game_id = game_id_temp
+
+            self.create_next_previous()
+
+            self.load_data()
+   
         self.frame_chose_game = customtkinter.CTkFrame(
             master=self.right_frame,
             corner_radius=self.CORNER_RADIUS,
             # height=200
         )
-        self.frame_chose_game.grid(row=1, column=6, sticky="ns", pady=10)
+        self.frame_chose_game.grid(row=1, column=1, pady=10)
 
         self.frame_chose_game.rowconfigure(0, minsize=10)
         self.frame_chose_game.rowconfigure((1,2), weight=1)
@@ -474,7 +546,7 @@ GAME n°{game_id}
 
         self.frame_chose_game.columnconfigure(0, minsize=10)
         self.frame_chose_game.columnconfigure((1), weight=1)
-        self.frame_chose_game.columnconfigure(3, minsize=10)
+        self.frame_chose_game.columnconfigure(2, minsize=10)
 
         self.game_id_entry = customtkinter.CTkEntry(
             self.frame_chose_game,
@@ -482,20 +554,37 @@ GAME n°{game_id}
             font=self.FONT_LABEL,
             text_color="#FFFFFF",
             placeholder_text_color="#FFFFFF",
-            placeholder_text="1-50",
+            placeholder_text="game : 1-50",
             justify = tkinter.CENTER
         )
-        self.game_id_entry.grid(row=1, column=1)
+        self.game_id_entry.grid(row=1, column=1, padx=10, pady=10)
 
         self.search_button = customtkinter.CTkButton(
             master=self.frame_chose_game,
-            text="confirm",
+            text="confirm \nand load",
             font=self.FONT_BUTTON,
             command=change_game,
         )
-        self.search_button.grid(row=2, column=1)
+        self.search_button.grid(row=2, column=1, padx=10, pady=10)
         
-        self.load_data(game_id)
+
+        self.next_previous_frame = customtkinter.CTkFrame(
+            master=self.right_frame,
+            corner_radius=self.CORNER_RADIUS,
+            # height=200
+        )
+        self.next_previous_frame.grid(row=1, column=7, pady=10)
+
+        self.next_previous_frame.rowconfigure(0, minsize=10)
+        self.next_previous_frame.rowconfigure((1,2), weight=1)
+        self.next_previous_frame.rowconfigure(3, minsize=10)
+
+        self.next_previous_frame.columnconfigure(0, minsize=10)
+        self.next_previous_frame.columnconfigure((1), weight=1)
+        self.next_previous_frame.columnconfigure(2, minsize=10)
+
+        self.create_next_previous()
+
 
         print("last game")
 

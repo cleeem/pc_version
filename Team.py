@@ -10,7 +10,7 @@ class Team:
         self.win_or_lose = data["judgement"]
         
         if mode in ("REGULAR", "FEST"):
-            self.score = "draw" if data["result"] is None else str(data["result"]["paintRatio"] * 100) + "%"
+            self.score = "draw" if data["result"] is None else str(data["result"]["paintRatio"] * 100)[:4] + "%"
         else:
             self.score = "draw" if data["result"] is None else round(data["result"]["score"], 1) 
 
