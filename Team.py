@@ -2,6 +2,40 @@ from Player import Player
 
 class Team:
 
+    player_unknown_dict = {
+        "name" : "?",
+        "paint" : 0,
+        "result" : None,
+        "weapon" : {
+            "name" : "Unknown",
+            "specialWeapon" : {
+                "name" : "Unknown",
+            },
+            "subWeapon" : {
+                "name" : "Unknown",
+            },
+        },
+        "headGear" : {
+            "primaryGearPower" : {
+                "name" : "Unknown",
+            },
+            "additionalGearPowers" : []
+        },
+        "clothingGear" : {
+            "primaryGearPower" : {
+                "name" : "Unknown",
+            },
+            "additionalGearPowers" : []
+        },
+        "shoesGear" : {
+            "primaryGearPower" : {
+                "name" : "Unknown",
+            },
+            "additionalGearPowers" : []
+        },
+
+    }
+
     def __init__(self, data: dict, mode, is_my_team = False) -> None:
 
 
@@ -16,10 +50,16 @@ class Team:
 
         self.player_list = []
 
-        for player_data in data["players"]:
+        for player_data in data["players"][0:2]:
+            
             self.player_list.append(
                 Player(player_data)
             )
+        
+        if len(self.player_list) < 4:
+            for i in range(4 - len(self.player_list)):
+                self.player_list.append(Player(self.player_unknown_dict))
+
 
     def __str__(self) -> str:
         res_player = ""

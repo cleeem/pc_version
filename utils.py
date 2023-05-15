@@ -37,14 +37,13 @@ translate_rid = {
 	'StageRecordQuery' :                'f08a932d533845dde86e674e03bbb7d3', # stages stats
 	# 'ConfigureAnalyticsQuery' :         'f8ae00773cc412a50dd41a6d9a159ddd', # best X rankings
 	'FriendListQuery' :                 'f0a8ebc384cf5fbac01e8085fbd7c898', # friend list
-	'HistoryRecordQuery' :              'f09da9d24d888797fdfb2f060dbdf4ed', # weapons stats / badges
 	'MyOutfitsQuery' :                  '81d9a6849467d2aa6b1603ebcedbddbe',	# fresh fits ?
 	'ReplayQuery' :                     'e9cbaa835977b6c6de77ca7a4be15b24', # replays
 	'WeaponRecordQuery' :               '5f279779e7081f2d14ae1ddca0db2b6e', # weapons only
 	'XRankingQuery' :                   'd771444f2584d938db8d10055599011d', # top1 in each mode + personal powers
-	'HistoryRecordQuery' :              'f09da9d24d888797fdfb2f060dbdf4ed' # history -> summary page
-	# 'BattleHistoryCurrentPlayerQuery' : '49dd00428fb8e9b4dde62f585c8de1e0'
-	# 'XRankingDetailQuery' :                 'd62ec65b297968b659103d8dc95d014d'
+	'HistoryRecordQuery' :              'f09da9d24d888797fdfb2f060dbdf4ed', # history -> summary page
+	'GesotownQuery' :                   'a43dd44899a09013bcfd29b4b13314ff',
+	# 'DetailTabViewXRankingLfRefetchQuery' :                 'd96057b8f46e5f7f213a35c8ea2b8fdc'
 
 }
 

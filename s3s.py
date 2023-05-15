@@ -10,6 +10,7 @@ from subprocess import call
 import msgpack
 from packaging import version
 import iksm, utils
+import customtkinter
 
 
 A_VERSION = "0.4.0"
@@ -211,7 +212,7 @@ def gen_new_tokens(reason="expiry", force=False):
 		print(f"Wrote tokens for {acc_name} to config.txt.\n")
 
 
-def fetch_json(which, separate=False, exportall=False, specific=False, numbers_only=False, printout=False, skipprefetch=False):
+def fetch_json(which, bar, separate=False, exportall=False, specific=False, numbers_only=False, printout=False, skipprefetch=False):
 	'''Returns results JSON from SplatNet 3, including a combined dictionary for battles + SR jobs if requested.'''
 
 	# swim = SquidProgress()
@@ -278,8 +279,12 @@ def fetch_json(which, separate=False, exportall=False, specific=False, numbers_o
 
 			# ink battles - latest 50 of any type
 			if "latestBattleHistories" in query1_resp["data"]:
-				for battle_group in query1_resp["data"]["latestBattleHistories"]["historyGroups"]["nodes"]:
-					for battle in battle_group["historyDetails"]["nodes"]:
+				for k, battle_group in enumerate(query1_resp["data"]["latestBattleHistories"]["historyGroups"]["nodes"]):
+					size = len(battle_group)
+					for i, battle in enumerate(battle_group["historyDetails"]["nodes"]):
+						if not bar is None:
+							bar.set(i/size)
+							bar.update()
 						battle_ids.append(battle["id"]) # don't filter out private battles here - do that in post_result()
 
 			# # ink battles - latest 50 turf war
@@ -487,7 +492,7 @@ def parse_arguments():
 	return parser.parse_args()
 
 
-def main(game_index = 1, use_account="", dict_key=""):
+def main(bar=None, game_index = 1, use_account="", dict_key=""):
 	'''Main process, including I/O and setup.'''
 
 	global user_account
@@ -505,7 +510,7 @@ def main(game_index = 1, use_account="", dict_key=""):
 
 	# ! fetch from online
 	try:
-		results = fetch_json(which, numbers_only=True, skipprefetch=False)
+		results = fetch_json(which, bar=bar, numbers_only=True, skipprefetch=False)
 	except json.decoder.JSONDecodeError:
 		print("\nCould not fetch results JSON. Are your tokens invalid?")
 		sys.exit(1)
