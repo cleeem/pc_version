@@ -50,7 +50,7 @@ class Team:
 
         self.player_list = []
 
-        for player_data in data["players"][0:2]:
+        for player_data in data["players"]:
             
             self.player_list.append(
                 Player(player_data)

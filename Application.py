@@ -132,7 +132,7 @@ class Application(customtkinter.CTk):
             master=self.left_frame,
             text="splatnet \nstuffs",
             font=self.FONT_BUTTON,
-            command=self.configure_frames_splatnet,
+            command=self.splatnet_callback,
             height=self.BUTTON_HEIGHT,
         )
         self.splatnet_button.grid(row=1, column=0, pady=10, padx=20)
@@ -182,9 +182,10 @@ class Application(customtkinter.CTk):
         return new_image
 
     def configure_frames_games(self):
-
         try:
+            print("oui")
             self.right_frame.destroy()
+            print("fini")
         except:
             pass
 
@@ -276,6 +277,51 @@ class Application(customtkinter.CTk):
             corner_radius=self.CORNER_RADIUS
         )
         self.right_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+
+        self.right_frame.rowconfigure(0, minsize=10)
+        self.right_frame.rowconfigure(1, weight=1)
+        self.right_frame.rowconfigure(2, minsize=10)
+
+        self.right_frame.columnconfigure(0, minsize=10)
+        self.right_frame.columnconfigure((1,2,3,4,5,6,7), weight=1)
+        self.right_frame.columnconfigure(8, minsize=10)
+
+        self.daily_brand_frame = customtkinter.CTkFrame(
+            master=self.right_frame
+        )
+        self.daily_brand_frame.grid(
+            row=1, column=1,
+            columnspan=2,
+            sticky="nsew",
+            padx=10, pady=10
+        )
+
+        self.daily_brand_frame.rowconfigure(0, minsize=10)
+        self.daily_brand_frame.rowconfigure((1,2,3,4,5), weight=1)
+        self.daily_brand_frame.rowconfigure(6, minsize=10)
+
+        self.daily_brand_frame.columnconfigure(0, minsize=10)
+        self.daily_brand_frame.columnconfigure((1,2), weight=1)
+        self.daily_brand_frame.columnconfigure(3, minsize=10)
+
+
+        self.other_stuffs_frame = customtkinter.CTkFrame(
+            master=self.right_frame
+        ) 
+        self.other_stuffs_frame.grid(
+            row=1, column=4,
+            columnspan=4,
+            sticky="nsew",
+            padx=10, pady=10
+        )
+
+        self.other_stuffs_frame.rowconfigure(0, minsize=10)
+        self.other_stuffs_frame.rowconfigure((1,2,3,4,5), weight=1)
+        self.other_stuffs_frame.rowconfigure(6, minsize=10)
+
+        self.other_stuffs_frame.columnconfigure(0, minsize=10)
+        self.other_stuffs_frame.columnconfigure((1,2), weight=1)
+        self.other_stuffs_frame.columnconfigure(2, minsize=10)
 
     def row_column_configure_frame(self, frame):
         frame.columnconfigure(0, minsize=10)
@@ -459,23 +505,23 @@ GAME n°{game_id}
         self.display_result(game_data, game_id)
 
     def get_game_data(self, game_id):
-        # try:
-        pulled_data = s3s.main(
-            bar=self.progress_bar, 
-            game_index=game_id, 
-            dict_key="VsHistoryDetailQuery"
-        )
+        try:
+            pulled_data = s3s.main(
+                bar=self.progress_bar, 
+                game_index=game_id, 
+                dict_key="VsHistoryDetailQuery"
+            )
 
-        return Splatoon3Game(pulled_data["data"]["vsHistoryDetail"])
-        # except: # Connection Error
-        #     self.label_connection_erreor = customtkinter.CTkLabel(
-        #         master=self.game_frame,
-        #         text="Could not connect to Internet, please check your connection",
-        #         font=self.FONT_LABEL
-        #     )
-        #     self.label_connection_erreor.grid(
-        #         row=1, column=2
-        #     )
+            return Splatoon3Game(pulled_data["data"]["vsHistoryDetail"])
+        except: # Connection Error
+            self.label_connection_erreor = customtkinter.CTkLabel(
+                master=self.game_frame,
+                text="Could not connect to Internet, please check your connection",
+                font=self.FONT_LABEL
+            )
+            self.label_connection_erreor.grid(
+                row=1, column=2
+            )
 
     def load_data(self):
         if not self.check_configuration():
@@ -485,7 +531,7 @@ GAME n°{game_id}
 
             label_loading = customtkinter.CTkLabel(
                 master=self.game_frame,
-                text="loading data, it may take some time",
+                text="Loading data, it may take some time",
                 font=self.FONT_LABEL
             )
             label_loading.grid(
@@ -545,19 +591,19 @@ GAME n°{game_id}
 
         self.next_game_button = customtkinter.CTkButton(
             master=self.next_previous_frame,
-            text="load next game",
+            text="Load next game",
             font=self.FONT_BUTTON,
             command=self.next_game,
         )
-        self.next_game_button.grid(row=1, column=1, padx=10, pady=10)
+        self.next_game_button.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
         self.previous_game_button = customtkinter.CTkButton(
             master=self.next_previous_frame,
-            text="load previous game",
+            text="Load previous game",
             font=self.FONT_BUTTON,
             command=self.previous_game,
         )
-        self.previous_game_button.grid(row=2, column=1, padx=10, pady=10)
+        self.previous_game_button.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
 
         if self.game_id <= 1:
             self.next_game_button.configure(state="disabled")
@@ -625,7 +671,7 @@ GAME n°{game_id}
 
         self.search_button = customtkinter.CTkButton(
             master=self.frame_chose_game,
-            text="confirm \nand load",
+            text="Confirm \nand load",
             font=self.FONT_BUTTON,
             command=change_game,
         )
@@ -651,6 +697,61 @@ GAME n°{game_id}
 
 
         print("last game")
+
+    def display_daily_brand(self, splatnet_data: dict):
+        brand_name = splatnet_data["dailyBrand"]["name"]
+        common_bonus = splatnet_data["dailyBrand"]["common"]
+
+        common_bonus_image = self.load_ctk_image(f"bonus/{common_bonus}.png", x=64, y=64)
+        
+        daily_drop_name_label = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text=f"Brand : {brand_name}",
+            font=self.FONT_LABEL,
+            justify=tkinter.CENTER
+        )
+        daily_drop_name_label.grid(row=2, column=1)
+
+        daily_drop_bonus_image = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text=f"",
+            image=common_bonus_image
+        )
+        daily_drop_bonus_image.grid(row=2, column=2)
+
+
+    def splatnet_callback(self):
+        self.configure_frames_splatnet()
+        loading_label = customtkinter.CTkLabel(
+            master=self.other_stuffs_frame,
+            text="Pulling data from Online\nmight take some time",
+            font=self.FONT_TITLE,
+            justify=tkinter.LEFT
+        )
+        loading_label.grid(row=1, column=1, columnspan=2)
+
+        self.update()
+
+        try:
+            splatnet_data = self.load_splatnet_data()
+            loading_label.destroy()
+        except:
+            loading_label.configure(text="Connection error, \nplease try again later")
+
+        daily_drop_label = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text=f"Daily Drop Gears",
+            font=self.FONT_LABEL,
+            justify=tkinter.CENTER
+        )
+        daily_drop_label.grid(row=1, column=1, columnspan=2)
+
+        self.update()
+
+        self.display_daily_brand(splatnet_data)
+
+        # print(splatnet_data)
+
 
     def setup_callback(self):
 
