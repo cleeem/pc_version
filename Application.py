@@ -183,9 +183,8 @@ class Application(customtkinter.CTk):
 
     def configure_frames_games(self):
         try:
-            print("oui")
             self.right_frame.destroy()
-            print("fini")
+            self.setup_frame.destroy()
         except:
             pass
 
@@ -297,8 +296,8 @@ class Application(customtkinter.CTk):
         )
 
         self.daily_brand_frame.rowconfigure(0, minsize=10)
-        self.daily_brand_frame.rowconfigure((1,2,3,4,5), weight=1)
-        self.daily_brand_frame.rowconfigure(6, minsize=10)
+        self.daily_brand_frame.rowconfigure((1,2,3,4,5,6,7), weight=1)
+        self.daily_brand_frame.rowconfigure(8, minsize=10)
 
         self.daily_brand_frame.columnconfigure(0, minsize=10)
         self.daily_brand_frame.columnconfigure((1,2), weight=1)
@@ -698,26 +697,85 @@ GAME n°{game_id}
 
         print("last game")
 
+    def get_gear_path(self, gear_name):
+        if os.path.exists(f"gears/headGears/{gear_name}.png"):
+            return f"gears/headGears/{gear_name}.png"
+        
+        elif os.path.exists(f"gears/clothingGears/{gear_name}.png"):
+            return f"gears/clothingGears/{gear_name}.png"
+        
+        elif os.path.exists(f"gears/shoesGears/{gear_name}.png"):
+            return f"gears/shoesGears/{gear_name}.png"
+
+
     def display_daily_brand(self, splatnet_data: dict):
         brand_name = splatnet_data["dailyBrand"]["name"]
         common_bonus = splatnet_data["dailyBrand"]["common"]
 
-        common_bonus_image = self.load_ctk_image(f"bonus/{common_bonus}.png", x=64, y=64)
+        common_bonus_image = self.load_ctk_image(f"bonus/{common_bonus}.png", x=100, y=100)
         
-        daily_drop_name_label = customtkinter.CTkLabel(
+        daily_drop_brand_label = customtkinter.CTkLabel(
             master=self.daily_brand_frame,
-            text=f"Brand : {brand_name}",
+            text=f"Brand : ",
             font=self.FONT_LABEL,
             justify=tkinter.CENTER
         )
-        daily_drop_name_label.grid(row=2, column=1)
+        daily_drop_brand_label.grid(row=2, column=1)
+
+        daily_drop_name_label = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text=brand_name,
+            font=self.FONT_LABEL,
+            justify=tkinter.CENTER
+        )
+        daily_drop_name_label.grid(row=2, column=2)
+
+
+        daily_drop_common_bonus_label = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text=f"Common Bonus : ",
+            font=self.FONT_LABEL,
+            justify=tkinter.CENTER
+        )
+        daily_drop_common_bonus_label.grid(row=3, column=1)
 
         daily_drop_bonus_image = customtkinter.CTkLabel(
             master=self.daily_brand_frame,
             text=f"",
             image=common_bonus_image
         )
-        daily_drop_bonus_image.grid(row=2, column=2)
+        daily_drop_bonus_image.grid(row=3, column=2)
+
+        index=4
+
+        for gear in splatnet_data["dailyDropGears"]:
+            gear_name = gear["name"]
+                        
+            gear_path = self.get_gear_path(gear_name)
+
+            # print(gear_path)
+
+            gear_image = self.load_ctk_image(gear_path, x=100, y=100)
+            label = customtkinter.CTkLabel(
+                master=self.daily_brand_frame,
+                text="",
+                image=gear_image
+            )
+            label.grid(row=index, column=2)
+
+            gear_label = customtkinter.CTkLabel(
+                master=self.daily_brand_frame,
+                text=gear_name,
+                font=self.FONT_LABEL
+            )
+            gear_label.grid(row=index, column=1)
+
+            index+=1
+
+            # {
+            #     "name" : gear_name,
+            #     "image" : gear_image,
+            # }
 
 
     def splatnet_callback(self):
@@ -750,11 +808,7 @@ GAME n°{game_id}
 
         self.display_daily_brand(splatnet_data)
 
-        # print(splatnet_data)
-
-
     def setup_callback(self):
-
         try:
             self.right_frame.destroy()
         except:
@@ -843,7 +897,6 @@ GAME n°{game_id}
                 temp_bar = customtkinter.CTkProgressBar(master=self)
 
                 pid = s3s.main(bar=temp_bar, dict_key="VsHistoryDetailQuery")["data"]["vsHistoryDetail"]["player"]["id"]
-                # print(pid)
                 with open("pid.txt", "w") as file:
                     file.write(pid)
 
