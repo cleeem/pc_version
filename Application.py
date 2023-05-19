@@ -300,8 +300,8 @@ class Application(customtkinter.CTk):
         self.daily_brand_frame.rowconfigure(8, minsize=10)
 
         self.daily_brand_frame.columnconfigure(0, minsize=10)
-        self.daily_brand_frame.columnconfigure((1,2), weight=1)
-        self.daily_brand_frame.columnconfigure(3, minsize=10)
+        self.daily_brand_frame.columnconfigure((1,2,3,4), weight=1)
+        self.daily_brand_frame.columnconfigure(5, minsize=10)
 
 
         self.other_stuffs_frame = customtkinter.CTkFrame(
@@ -504,23 +504,23 @@ GAME n°{game_id}
         self.display_result(game_data, game_id)
 
     def get_game_data(self, game_id):
-        try:
-            pulled_data = s3s.main(
-                bar=self.progress_bar, 
-                game_index=game_id, 
-                dict_key="VsHistoryDetailQuery"
-            )
+        # try:
+        pulled_data = s3s.main(
+            bar=self.progress_bar, 
+            game_index=game_id, 
+            dict_key="VsHistoryDetailQuery"
+        )
 
-            return Splatoon3Game(pulled_data["data"]["vsHistoryDetail"])
-        except: # Connection Error
-            self.label_connection_erreor = customtkinter.CTkLabel(
-                master=self.game_frame,
-                text="Could not connect to Internet, please check your connection",
-                font=self.FONT_LABEL
-            )
-            self.label_connection_erreor.grid(
-                row=1, column=2
-            )
+        return Splatoon3Game(pulled_data["data"]["vsHistoryDetail"])
+        # except: # Connection Error
+        #     self.label_connection_erreor = customtkinter.CTkLabel(
+        #         master=self.game_frame,
+        #         text="An error as ocurred, \nplease check your connection",
+        #         font=self.FONT_LABEL
+        #     )
+        #     self.label_connection_erreor.grid(
+        #         row=1, column=2
+        #     )
 
     def load_data(self):
         if not self.check_configuration():
@@ -698,15 +698,14 @@ GAME n°{game_id}
         print("last game")
 
     def get_gear_path(self, gear_name):
-        if os.path.exists(f"gears/headGears/{gear_name}.png"):
-            return f"gears/headGears/{gear_name}.png"
+        if os.path.exists(f"gears/headGear/{gear_name}.png"):
+            return f"gears/headGear/{gear_name}.png"
         
-        elif os.path.exists(f"gears/clothingGears/{gear_name}.png"):
-            return f"gears/clothingGears/{gear_name}.png"
+        elif os.path.exists(f"gears/clothingGear/{gear_name}.png"):
+            return f"gears/clothingGear/{gear_name}.png"
         
-        elif os.path.exists(f"gears/shoesGears/{gear_name}.png"):
-            return f"gears/shoesGears/{gear_name}.png"
-
+        elif os.path.exists(f"gears/shoesGear/{gear_name}.png"):
+            return f"gears/shoesGear/{gear_name}.png"
 
     def display_daily_brand(self, splatnet_data: dict):
         brand_name = splatnet_data["dailyBrand"]["name"]
@@ -714,6 +713,7 @@ GAME n°{game_id}
 
         common_bonus_image = self.load_ctk_image(f"bonus/{common_bonus}.png", x=100, y=100)
         
+        """
         daily_drop_brand_label = customtkinter.CTkLabel(
             master=self.daily_brand_frame,
             text=f"Brand : ",
@@ -744,7 +744,9 @@ GAME n°{game_id}
             text=f"",
             image=common_bonus_image
         )
-        daily_drop_bonus_image.grid(row=3, column=2)
+        daily_drop_bonus_image.grid(row=3, column=2)"""
+
+        table_1
 
         index=4
 
@@ -752,8 +754,6 @@ GAME n°{game_id}
             gear_name = gear["name"]
                         
             gear_path = self.get_gear_path(gear_name)
-
-            # print(gear_path)
 
             gear_image = self.load_ctk_image(gear_path, x=100, y=100)
             label = customtkinter.CTkLabel(
@@ -777,7 +777,6 @@ GAME n°{game_id}
             #     "image" : gear_image,
             # }
 
-
     def splatnet_callback(self):
         self.configure_frames_splatnet()
         loading_label = customtkinter.CTkLabel(
@@ -793,20 +792,20 @@ GAME n°{game_id}
         try:
             splatnet_data = self.load_splatnet_data()
             loading_label.destroy()
+
+            daily_drop_label = customtkinter.CTkLabel(
+                master=self.daily_brand_frame,
+                text=f"Daily Drop Gears",
+                font=self.FONT_LABEL,
+                justify=tkinter.CENTER
+            )
+            daily_drop_label.grid(row=1, column=1, columnspan=2)
+
+            self.update()
+
+            self.display_daily_brand(splatnet_data)
         except:
             loading_label.configure(text="Connection error, \nplease try again later")
-
-        daily_drop_label = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text=f"Daily Drop Gears",
-            font=self.FONT_LABEL,
-            justify=tkinter.CENTER
-        )
-        daily_drop_label.grid(row=1, column=1, columnspan=2)
-
-        self.update()
-
-        self.display_daily_brand(splatnet_data)
 
     def setup_callback(self):
         try:
