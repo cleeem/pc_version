@@ -315,8 +315,8 @@ class Application(customtkinter.CTk):
         )
 
         self.other_stuffs_frame.rowconfigure(0, minsize=10)
-        self.other_stuffs_frame.rowconfigure((1,2,3,4,5), weight=1)
-        self.other_stuffs_frame.rowconfigure(6, minsize=10)
+        self.other_stuffs_frame.rowconfigure((1,2,3,4,5,6), weight=1)
+        self.other_stuffs_frame.rowconfigure(7, minsize=10)
 
         self.other_stuffs_frame.columnconfigure(0, minsize=10)
         self.other_stuffs_frame.columnconfigure((1,2), weight=1)
@@ -720,7 +720,7 @@ GAME n°{game_id}
             font=self.FONT_LABEL,
             justify=tkinter.CENTER
         )
-        daily_drop_brand_label.grid(row=2, column=1)
+        daily_drop_brand_label.grid(row=2, column=2)
 
         daily_drop_name_label = customtkinter.CTkLabel(
             master=self.daily_brand_frame,
@@ -728,7 +728,7 @@ GAME n°{game_id}
             font=self.FONT_LABEL,
             justify=tkinter.CENTER
         )
-        daily_drop_name_label.grid(row=2, column=2)
+        daily_drop_name_label.grid(row=2, column=3)
 
 
         daily_drop_common_bonus_label = customtkinter.CTkLabel(
@@ -748,24 +748,30 @@ GAME n°{game_id}
 
         table_1
 
+        table_1 = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text="name"
+        )
+        table_1.grid
+
         index=4
 
         for gear in splatnet_data["dailyDropGears"]:
             gear_name = gear["name"]
-                        
+            gear_price = gear["price"]
             gear_path = self.get_gear_path(gear_name)
 
             gear_image = self.load_ctk_image(gear_path, x=100, y=100)
-            label = customtkinter.CTkLabel(
+            label_image = customtkinter.CTkLabel(
                 master=self.daily_brand_frame,
                 text="",
                 image=gear_image
             )
-            label.grid(row=index, column=2)
+            label_image.grid(row=index, column=2)
 
             gear_label = customtkinter.CTkLabel(
                 master=self.daily_brand_frame,
-                text=gear_name,
+                text=f"{gear_name} \nprice : {gear_price}",
                 font=self.FONT_LABEL
             )
             gear_label.grid(row=index, column=1)
@@ -806,6 +812,8 @@ GAME n°{game_id}
             self.display_daily_brand(splatnet_data)
         except:
             loading_label.configure(text="Connection error, \nplease try again later")
+
+
 
     def setup_callback(self):
         try:
