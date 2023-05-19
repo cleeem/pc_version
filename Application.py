@@ -261,6 +261,15 @@ class Application(customtkinter.CTk):
         self.game_frame.columnconfigure((1,2,3), weight=1)
         self.game_frame.columnconfigure(4, minsize=10)
 
+    def congigure_stuff_frame(self, frame: customtkinter.CTkFrame):
+        frame.rowconfigure(0, minsize=10)
+        frame.rowconfigure(1, weight=1)
+        frame.rowconfigure(2, minsize=10)
+
+        frame.columnconfigure(0, minsize=10)
+        frame.columnconfigure((1,2,3), weight=1)
+        frame.columnconfigure(4, minsize=10)
+
     def load_splatnet_data(self):
         stuffs = Splatnet.GesotownQuery(s3s.main(dict_key="GesotownQuery"))
         return stuffs
@@ -296,13 +305,56 @@ class Application(customtkinter.CTk):
         )
 
         self.daily_brand_frame.rowconfigure(0, minsize=10)
-        self.daily_brand_frame.rowconfigure((1,2,3,4,5,6,7), weight=1)
-        self.daily_brand_frame.rowconfigure(8, minsize=10)
+        self.daily_brand_frame.rowconfigure((1,2,3,4,5), weight=1)
+        self.daily_brand_frame.rowconfigure(6, minsize=10)
 
         self.daily_brand_frame.columnconfigure(0, minsize=10)
-        self.daily_brand_frame.columnconfigure((1,2,3,4), weight=1)
-        self.daily_brand_frame.columnconfigure(5, minsize=10)
+        self.daily_brand_frame.columnconfigure((1), weight=1)
+        self.daily_brand_frame.columnconfigure(2, minsize=10)
 
+
+        self.daily_first_gear_frame = customtkinter.CTkFrame(
+            master=self.daily_brand_frame,
+            height=150
+        )
+        self.daily_first_gear_frame.grid(row=2, column=1, sticky="nsew", padx=10, pady=10)
+
+        self.congigure_stuff_frame(self.daily_first_gear_frame)
+
+
+        self.daily_second_gear_frame = customtkinter.CTkFrame(
+            master=self.daily_brand_frame,
+            height=150
+        )
+        self.daily_second_gear_frame.grid(row=3, column=1, sticky="nsew", padx=10, pady=10)
+
+        self.congigure_stuff_frame(self.daily_second_gear_frame)
+
+
+        self.daily_third_gear_frame = customtkinter.CTkFrame(
+            master=self.daily_brand_frame,
+            height=150
+        )
+        self.daily_third_gear_frame.grid(row=4, column=1, sticky="nsew", padx=10, pady=10)
+
+        self.congigure_stuff_frame(self.daily_third_gear_frame)
+
+
+        self.daily_gear_frames = [self.daily_first_gear_frame, self.daily_second_gear_frame, self.daily_third_gear_frame]
+
+
+        self.common_bonus_frame = customtkinter.CTkFrame(
+            master=self.daily_brand_frame,
+            height=150
+        )
+        self.common_bonus_frame.grid(row=5, column=1, sticky="ew", padx=10, pady=10)
+        self.common_bonus_frame.rowconfigure(0, minsize=10)
+        self.common_bonus_frame.rowconfigure((1), weight=1)
+        self.common_bonus_frame.rowconfigure(2, minsize=10)
+
+        self.common_bonus_frame.columnconfigure(0, minsize=10)
+        self.common_bonus_frame.columnconfigure((1,2,3), weight=1)
+        self.common_bonus_frame.columnconfigure(4, minsize=10)
 
         self.other_stuffs_frame = customtkinter.CTkFrame(
             master=self.right_frame
@@ -315,12 +367,54 @@ class Application(customtkinter.CTk):
         )
 
         self.other_stuffs_frame.rowconfigure(0, minsize=10)
-        self.other_stuffs_frame.rowconfigure((1,2,3,4,5,6), weight=1)
+        self.other_stuffs_frame.rowconfigure((1,2,3), weight=1)
         self.other_stuffs_frame.rowconfigure(7, minsize=10)
 
         self.other_stuffs_frame.columnconfigure(0, minsize=10)
         self.other_stuffs_frame.columnconfigure((1,2), weight=1)
-        self.other_stuffs_frame.columnconfigure(2, minsize=10)
+        self.other_stuffs_frame.columnconfigure(3, minsize=10)
+
+        self.other_frame_1 = customtkinter.CTkFrame(
+            master=self.other_stuffs_frame,
+            height=150
+        )
+        self.other_frame_1.grid(row=1, column=1, sticky="nsew", padx=10, pady=10)
+        self.congigure_stuff_frame(self.other_frame_1)
+
+        self.other_frame_2 = customtkinter.CTkFrame(
+            master=self.other_stuffs_frame,
+            height=150
+        )
+        self.other_frame_2.grid(row=1, column=2, sticky="nsew", padx=10, pady=10)
+        self.congigure_stuff_frame(self.other_frame_2)
+
+        self.other_frame_3 = customtkinter.CTkFrame(
+            master=self.other_stuffs_frame,
+            height=150
+        )
+        self.other_frame_3.grid(row=2, column=1, sticky="nsew", padx=10, pady=10)
+        self.congigure_stuff_frame(self.other_frame_3)
+
+        self.other_frame_4 = customtkinter.CTkFrame(
+            master=self.other_stuffs_frame,
+            height=150
+        )
+        self.other_frame_4.grid(row=2, column=2, sticky="nsew", padx=10, pady=10)
+        self.congigure_stuff_frame(self.other_frame_4)
+
+        self.other_frame_5 = customtkinter.CTkFrame(
+            master=self.other_stuffs_frame,
+            height=150
+        )
+        self.other_frame_5.grid(row=3, column=1, sticky="nsew", padx=10, pady=10)
+        self.congigure_stuff_frame(self.other_frame_5)
+
+        self.other_frame_6 = customtkinter.CTkFrame(
+            master=self.other_stuffs_frame,
+            height=150
+        )
+        self.other_frame_6.grid(row=3, column=2, sticky="nsew", padx=10, pady=10)
+        self.congigure_stuff_frame(self.other_frame_6)
 
     def row_column_configure_frame(self, frame):
         frame.columnconfigure(0, minsize=10)
@@ -707,91 +801,82 @@ GAME n°{game_id}
         elif os.path.exists(f"gears/shoesGear/{gear_name}.png"):
             return f"gears/shoesGear/{gear_name}.png"
 
+    def display_stuff(self, gear, i):
+        gear_type = ["headGear", "clothingGear", "shoesGear"][i]
+        name = gear["name"]
+        price = gear["price"]
+        new_bonus = gear["ability"]
+        gear_image = self.load_ctk_image(path=f"gears/{gear_type}/{name}.png", x=64, y=64)
+        new_bonus_image = self.load_ctk_image(path=f"bonus/{new_bonus}.png")
+
+        frame = self.daily_gear_frames[i]
+
+        gear_image_label = customtkinter.CTkLabel(
+            master=frame,
+            text="",
+            image=gear_image
+        )
+        gear_image_label.grid(row=1, column=1)
+        new_bonus_image_label = customtkinter.CTkLabel(
+            master=frame,
+            text="",
+            image=new_bonus_image
+        )
+        new_bonus_image_label.grid(row=1, column=2)
+        name_label = customtkinter.CTkLabel(
+            master=frame,
+            text=f"{name}\n{price}",
+            font=self.FONT_LABEL
+        )
+        name_label.grid(row=1, column=3)
+
+        
+
     def display_daily_brand(self, splatnet_data: dict):
         brand_name = splatnet_data["dailyBrand"]["name"]
         common_bonus = splatnet_data["dailyBrand"]["common"]
 
-        common_bonus_image = self.load_ctk_image(f"bonus/{common_bonus}.png", x=100, y=100)
-        
-        """
-        daily_drop_brand_label = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text=f"Brand : ",
-            font=self.FONT_LABEL,
-            justify=tkinter.CENTER
+        common_bonus_image = self.load_ctk_image(f"bonus/{common_bonus}.png", x=64, y=64)
+
+        self.daily_drop_brand_label.configure(text=f"Brand : {brand_name}")
+
+        common_bonus_image_label = customtkinter.CTkLabel(
+            master=self.common_bonus_frame,
+            text="",
+            image=common_bonus_image,
         )
-        daily_drop_brand_label.grid(row=2, column=2)
-
-        daily_drop_name_label = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text=brand_name,
-            font=self.FONT_LABEL,
-            justify=tkinter.CENTER
-        )
-        daily_drop_name_label.grid(row=2, column=3)
+        common_bonus_image_label.grid(row=1, column=2)
 
 
-        daily_drop_common_bonus_label = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text=f"Common Bonus : ",
-            font=self.FONT_LABEL,
-            justify=tkinter.CENTER
-        )
-        daily_drop_common_bonus_label.grid(row=3, column=1)
+        for i, gear in enumerate(splatnet_data["dailyDropGears"]):
+            self.display_stuff(gear, i)
 
-        daily_drop_bonus_image = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text=f"",
-            image=common_bonus_image
-        )
-        daily_drop_bonus_image.grid(row=3, column=2)"""
 
-        table_1
-
-        table_1 = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text="name"
-        )
-        table_1.grid
-
-        index=4
-
-        for gear in splatnet_data["dailyDropGears"]:
-            gear_name = gear["name"]
-            gear_price = gear["price"]
-            gear_path = self.get_gear_path(gear_name)
-
-            gear_image = self.load_ctk_image(gear_path, x=100, y=100)
-            label_image = customtkinter.CTkLabel(
-                master=self.daily_brand_frame,
-                text="",
-                image=gear_image
-            )
-            label_image.grid(row=index, column=2)
-
-            gear_label = customtkinter.CTkLabel(
-                master=self.daily_brand_frame,
-                text=f"{gear_name} \nprice : {gear_price}",
-                font=self.FONT_LABEL
-            )
-            gear_label.grid(row=index, column=1)
-
-            index+=1
-
-            # {
-            #     "name" : gear_name,
-            #     "image" : gear_image,
-            # }
+       
 
     def splatnet_callback(self):
         self.configure_frames_splatnet()
+        self.daily_drop_brand_label = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text="Brand : ",
+            font=self.FONT_LABEL,
+        )
+        self.daily_drop_brand_label.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+        common_bonus_label = customtkinter.CTkLabel(
+            master=self.common_bonus_frame,
+            text="Common Bonus : ",
+            font=self.FONT_LABEL,
+        )
+        common_bonus_label.grid(row=1, column=1, sticky="nsew")
+
         loading_label = customtkinter.CTkLabel(
-            master=self.other_stuffs_frame,
+            master=self,
             text="Pulling data from Online\nmight take some time",
             font=self.FONT_TITLE,
             justify=tkinter.LEFT
         )
-        loading_label.grid(row=1, column=1, columnspan=2)
+        loading_label.grid(row=0, column=1, columnspan=2)
 
         self.update()
 
@@ -799,21 +884,11 @@ GAME n°{game_id}
             splatnet_data = self.load_splatnet_data()
             loading_label.destroy()
 
-            daily_drop_label = customtkinter.CTkLabel(
-                master=self.daily_brand_frame,
-                text=f"Daily Drop Gears",
-                font=self.FONT_LABEL,
-                justify=tkinter.CENTER
-            )
-            daily_drop_label.grid(row=1, column=1, columnspan=2)
-
             self.update()
 
             self.display_daily_brand(splatnet_data)
         except:
             loading_label.configure(text="Connection error, \nplease try again later")
-
-
 
     def setup_callback(self):
         try:
