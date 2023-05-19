@@ -300,8 +300,8 @@ class Application(customtkinter.CTk):
         self.daily_brand_frame.rowconfigure(8, minsize=10)
 
         self.daily_brand_frame.columnconfigure(0, minsize=10)
-        self.daily_brand_frame.columnconfigure((1,2), weight=1)
-        self.daily_brand_frame.columnconfigure(3, minsize=10)
+        self.daily_brand_frame.columnconfigure((1,2,3,4), weight=1)
+        self.daily_brand_frame.columnconfigure(5, minsize=10)
 
 
         self.other_stuffs_frame = customtkinter.CTkFrame(
@@ -315,8 +315,8 @@ class Application(customtkinter.CTk):
         )
 
         self.other_stuffs_frame.rowconfigure(0, minsize=10)
-        self.other_stuffs_frame.rowconfigure((1,2,3,4,5), weight=1)
-        self.other_stuffs_frame.rowconfigure(6, minsize=10)
+        self.other_stuffs_frame.rowconfigure((1,2,3,4,5,6), weight=1)
+        self.other_stuffs_frame.rowconfigure(7, minsize=10)
 
         self.other_stuffs_frame.columnconfigure(0, minsize=10)
         self.other_stuffs_frame.columnconfigure((1,2), weight=1)
@@ -720,7 +720,7 @@ GAME n°{game_id}
             font=self.FONT_LABEL,
             justify=tkinter.CENTER
         )
-        daily_drop_brand_label.grid(row=2, column=1)
+        daily_drop_brand_label.grid(row=2, column=2)
 
         daily_drop_name_label = customtkinter.CTkLabel(
             master=self.daily_brand_frame,
@@ -728,7 +728,7 @@ GAME n°{game_id}
             font=self.FONT_LABEL,
             justify=tkinter.CENTER
         )
-        daily_drop_name_label.grid(row=2, column=2)
+        daily_drop_name_label.grid(row=2, column=3)
 
 
         daily_drop_common_bonus_label = customtkinter.CTkLabel(
@@ -746,26 +746,32 @@ GAME n°{game_id}
         )
         daily_drop_bonus_image.grid(row=3, column=2)
 
+        table_1 = customtkinter.CTkLabel(
+            master=self.daily_brand_frame,
+            text="name"
+        )
+        table_1.grid
+
         index=4
 
         for gear in splatnet_data["dailyDropGears"]:
             gear_name = gear["name"]
-                        
+            gear_price = gear["price"]
             gear_path = self.get_gear_path(gear_name)
 
             # print(gear_path)
 
             gear_image = self.load_ctk_image(gear_path, x=100, y=100)
-            label = customtkinter.CTkLabel(
+            label_image = customtkinter.CTkLabel(
                 master=self.daily_brand_frame,
                 text="",
                 image=gear_image
             )
-            label.grid(row=index, column=2)
+            label_image.grid(row=index, column=2)
 
             gear_label = customtkinter.CTkLabel(
                 master=self.daily_brand_frame,
-                text=gear_name,
+                text=f"{gear_name} \nprice : {gear_price}",
                 font=self.FONT_LABEL
             )
             gear_label.grid(row=index, column=1)
@@ -793,20 +799,23 @@ GAME n°{game_id}
         try:
             splatnet_data = self.load_splatnet_data()
             loading_label.destroy()
+
+            daily_drop_label = customtkinter.CTkLabel(
+                master=self.daily_brand_frame,
+                text=f"Daily Drop Gears",
+                font=self.FONT_LABEL,
+                justify=tkinter.CENTER
+            )
+            daily_drop_label.grid(row=1, column=1, columnspan=2)
+
+            self.update()
+
+            self.display_daily_brand(splatnet_data)
+
         except:
             loading_label.configure(text="Connection error, \nplease try again later")
 
-        daily_drop_label = customtkinter.CTkLabel(
-            master=self.daily_brand_frame,
-            text=f"Daily Drop Gears",
-            font=self.FONT_LABEL,
-            justify=tkinter.CENTER
-        )
-        daily_drop_label.grid(row=1, column=1, columnspan=2)
-
-        self.update()
-
-        self.display_daily_brand(splatnet_data)
+       
 
     def setup_callback(self):
         try:
