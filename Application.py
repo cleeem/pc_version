@@ -801,7 +801,7 @@ GAME n°{game_id}
         elif os.path.exists(f"gears/shoesGear/{gear_name}.png"):
             return f"gears/shoesGear/{gear_name}.png"
 
-    def display_stuff(self, gear, i):
+    def display_daily_stuff(self, gear, i):
         gear_type = ["headGear", "clothingGear", "shoesGear"][i]
         name = gear["name"]
         price = gear["price"]
@@ -825,12 +825,39 @@ GAME n°{game_id}
         new_bonus_image_label.grid(row=1, column=2)
         name_label = customtkinter.CTkLabel(
             master=frame,
-            text=f"{name}\n{price}",
-            font=self.FONT_LABEL
+            text=f"{name}\n{price}$",
+            # font=self.FONT_LABEL
+        )
+        name_label.grid(row=1, column=3)
+    
+    def display_other_gears(self, gear, frame):
+        name = gear["name"]
+        gear_type = gear["type"][0].lower() + gear["type"][1:]
+        price = gear["price"]
+        new_bonus = gear["ability"]
+        gear_image = self.load_ctk_image(path=f"gears/{gear_type}/{name}.png", x=100, y=100)
+        new_bonus_image = self.load_ctk_image(path=f"bonus/{new_bonus}.png", x=64, y=64)
+
+        gear_image_label = customtkinter.CTkLabel(
+            master=frame,
+            text="",
+            image=gear_image
+        )
+        gear_image_label.grid(row=1, column=1)
+        new_bonus_image_label = customtkinter.CTkLabel(
+            master=frame,
+            text="",
+            image=new_bonus_image
+        )
+        new_bonus_image_label.grid(row=1, column=2)
+        name_label = customtkinter.CTkLabel(
+            master=frame,
+            text=f"{name}\n{price}$",
+            # font=self.FONT_LABEL
         )
         name_label.grid(row=1, column=3)
 
-        
+
 
     def display_daily_brand(self, splatnet_data: dict):
         brand_name = splatnet_data["dailyBrand"]["name"]
@@ -849,9 +876,14 @@ GAME n°{game_id}
 
 
         for i, gear in enumerate(splatnet_data["dailyDropGears"]):
-            self.display_stuff(gear, i)
+            self.display_daily_stuff(gear, i)
 
-
+        self.display_other_gears(splatnet_data["gearsOnSale"][0], self.other_frame_1)
+        self.display_other_gears(splatnet_data["gearsOnSale"][1], self.other_frame_2)
+        self.display_other_gears(splatnet_data["gearsOnSale"][2], self.other_frame_3)
+        self.display_other_gears(splatnet_data["gearsOnSale"][3], self.other_frame_4)
+        self.display_other_gears(splatnet_data["gearsOnSale"][4], self.other_frame_5)
+        self.display_other_gears(splatnet_data["gearsOnSale"][5], self.other_frame_6)
        
 
     def splatnet_callback(self):

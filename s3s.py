@@ -261,7 +261,6 @@ def fetch_json(which, bar, separate=False, exportall=False, specific=False, numb
 	# 	queries.append(None)
 
 	needs_sorted = False # https://ygdp.yale.edu/phenomena/needs-washed :D
-
 	for sha in queries:
 		if sha is not None:
 			if DEBUG:
@@ -269,13 +268,13 @@ def fetch_json(which, bar, separate=False, exportall=False, specific=False, numb
 			lang = 'en-US' if sha == "CoopHistoryQuery" else None
 			sha = utils.translate_rid[sha]
 			battle_ids, job_ids = [], []
-
 			query1 = requests.post(utils.GRAPHQL_URL,
 				data=utils.gen_graphql_body(sha),
 				headers=headbutt(forcelang=lang),
 				cookies=dict(_gtoken=GTOKEN))
 			query1_resp = json.loads(query1.text)
 			# swim()
+
 
 			# ink battles - latest 50 of any type
 			if "latestBattleHistories" in query1_resp["data"]:
@@ -522,7 +521,6 @@ def main(bar=None, game_index = 1, use_account="", dict_key=""):
 	return_list = []
 
 	# for hash in results:
-		
 	return_list.append(fetch_and_upload_single_result(results[n], noun, dict_key)) # not monitoring mode
 
 	thread_pool.shutdown(wait=True)

@@ -39,6 +39,7 @@ def GesotownQuery(result: dict):
         res["gearsOnSale"].append(
             {
                 "name" : gear["gear"]["name"],
+                "type" : gear["gear"]["__typename"],
                 "ability" : gear["gear"]["primaryGearPower"]["name"],
                 "price" : gear["price"],
                 "endTime" : str(utils.epoch_time(gear["saleEndTime"]))[11:], # hours only 
