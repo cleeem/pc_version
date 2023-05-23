@@ -263,8 +263,8 @@ class Application(customtkinter.CTk):
 
     def congigure_stuff_frame(self, frame: customtkinter.CTkFrame):
         frame.rowconfigure(0, minsize=10)
-        frame.rowconfigure(1, weight=1)
-        frame.rowconfigure(2, minsize=10)
+        frame.rowconfigure((1,2), weight=1)
+        frame.rowconfigure(3, minsize=10)
 
         frame.columnconfigure(0, minsize=10)
         frame.columnconfigure((1,2,3), weight=1)
@@ -803,13 +803,17 @@ GAME n°{game_id}
 
     def display_daily_stuff(self, gear, i):
         gear_type = ["headGear", "clothingGear", "shoesGear"][i]
-        name = gear["name"]
+        name = gear["name"] 
         price = gear["price"]
         new_bonus = gear["ability"]
         gear_image = self.load_ctk_image(path=f"gears/{gear_type}/{name}.png", x=64, y=64)
-        new_bonus_image = self.load_ctk_image(path=f"bonus/{new_bonus}.png")
+        new_bonus_image = self.load_ctk_image(path=f"bonus/{new_bonus}.png", x=64, y=64)
 
         frame = self.daily_gear_frames[i]
+
+        change_name = ""
+        for word in name.split(" "):
+            change_name += word + "\n"
 
         gear_image_label = customtkinter.CTkLabel(
             master=frame,
@@ -825,8 +829,8 @@ GAME n°{game_id}
         new_bonus_image_label.grid(row=1, column=2)
         name_label = customtkinter.CTkLabel(
             master=frame,
-            text=f"{name}\n{price}$",
-            # font=self.FONT_LABEL
+            text=f"{change_name}\n{price} $",
+            font=self.FONT_LABEL
         )
         name_label.grid(row=1, column=3)
     
@@ -835,8 +839,13 @@ GAME n°{game_id}
         gear_type = gear["type"][0].lower() + gear["type"][1:]
         price = gear["price"]
         new_bonus = gear["ability"]
-        gear_image = self.load_ctk_image(path=f"gears/{gear_type}/{name}.png", x=100, y=100)
+        end_time = gear["endTime"]
+        gear_image = self.load_ctk_image(path=f"gears/{gear_type}/{name}.png", x=64, y=64)
         new_bonus_image = self.load_ctk_image(path=f"bonus/{new_bonus}.png", x=64, y=64)
+
+        change_name = ""
+        for word in name.split(" "):
+            change_name += word + "\n"
 
         gear_image_label = customtkinter.CTkLabel(
             master=frame,
@@ -852,10 +861,17 @@ GAME n°{game_id}
         new_bonus_image_label.grid(row=1, column=2)
         name_label = customtkinter.CTkLabel(
             master=frame,
-            text=f"{name}\n{price}$",
-            # font=self.FONT_LABEL
+            text=f"{change_name}\n{price} $",
+            font=self.FONT_LABEL
         )
         name_label.grid(row=1, column=3)
+
+        end_time_label = customtkinter.CTkLabel(
+            master=frame,
+            text=f"Gear available until {end_time}",
+            font=self.FONT_LABEL
+        )
+        end_time_label.grid(row=2, column=1, columnspan=3)
 
 
 
