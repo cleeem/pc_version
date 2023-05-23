@@ -8,7 +8,7 @@ from PIL import Image
 import iksm
 import s3s
 import utils as SpUtils
-import Splatnet
+import parse_data
 
 from Game import Game as Splatoon3Game
 from Team import Team as Splatoon3Team
@@ -120,22 +120,30 @@ class Application(customtkinter.CTk):
         # buttons 
         self.last_game_button = customtkinter.CTkButton(
             master=self.left_frame,
-            text="last game",
+            text="Last Game",
             font=self.FONT_BUTTON,
             command=self.last_game_callback,
             height=self.BUTTON_HEIGHT,
         )
         self.last_game_button.grid(row=0, column=0, pady=10, padx=20)
     
+        self.my_stats = customtkinter.CTkButton(
+            master=self.left_frame,
+            text="My Stats",
+            font=self.FONT_BUTTON,
+            command=self.my_stats_callback,
+            height=self.BUTTON_HEIGHT,
+        )
+        self.my_stats.grid(row=1, column=0, pady=10, padx=20)
 
         self.splatnet_button = customtkinter.CTkButton(
             master=self.left_frame,
-            text="splatnet \nstuffs",
+            text="Splatnet \nStuffs",
             font=self.FONT_BUTTON,
             command=self.splatnet_callback,
             height=self.BUTTON_HEIGHT,
         )
-        self.splatnet_button.grid(row=1, column=0, pady=10, padx=20)
+        self.splatnet_button.grid(row=2, column=0, pady=10, padx=20)
 
 
         self.setup_button = customtkinter.CTkButton(
@@ -180,6 +188,64 @@ class Application(customtkinter.CTk):
             temp_width += 64
         
         return new_image
+
+    def configure_my_stats_frames(self):
+        try:
+            self.right_frame.destroy()
+        except:
+            pass
+
+        self.right_frame = customtkinter.CTkFrame(
+            master=self,
+            corner_radius=self.CORNER_RADIUS
+        )
+        self.right_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
+
+        self.right_frame.rowconfigure(0, minsize=10)
+        self.right_frame.rowconfigure((1,2), weight=1)
+        self.right_frame.rowconfigure(3, minsize=10)
+
+        self.right_frame.columnconfigure(0, minsize=10)
+        self.right_frame.columnconfigure((1,2), weight=1)
+        self.right_frame.columnconfigure(3, minsize=10)
+
+
+        self.best_power_frame = customtkinter.CTkFrame(
+            master=self.right_frame,
+        )
+        self.best_power_frame.grid(row=1, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.best_power_frame.rowconfigure(0, minsize=10)
+        self.best_power_frame.rowconfigure((1,2,3,4), weight=1)
+        self.best_power_frame.rowconfigure(5, minsize=10)
+
+        self.best_power_frame.columnconfigure(0, minsize=10)
+        self.best_power_frame.columnconfigure((1,2,3,4), weight=1)
+        self.best_power_frame.columnconfigure(5, minsize=10)
+
+
+        self.current_power_frame = customtkinter.CTkFrame(
+            master=self.right_frame,
+        )
+        self.current_power_frame.grid(row=1, column=2, padx=10, pady=10, sticky="nsew")
+
+        self.current_power_frame.rowconfigure(0, minsize=10)
+        self.current_power_frame.rowconfigure((1,2,3,4), weight=1)
+        self.current_power_frame.rowconfigure(5, minsize=10)
+
+        self.current_power_frame.columnconfigure(0, minsize=10)
+        self.current_power_frame.columnconfigure((1,2,3,4), weight=1)
+        self.current_power_frame.columnconfigure(5, minsize=10)
+
+        self.frequent_weapons = customtkinter.CTkFrame(
+            master=self.right_frame,
+        )
+        self.frequent_weapons.grid(row=2, column=1, padx=10, pady=10, sticky="nsew")
+
+        self.weapon_usage = customtkinter.CTkFrame(
+            master=self.right_frame,
+        )
+        self.weapon_usage.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
 
     def configure_frames_games(self):
         try:
@@ -269,10 +335,6 @@ class Application(customtkinter.CTk):
         frame.columnconfigure(0, minsize=10)
         frame.columnconfigure((1,2,3), weight=1)
         frame.columnconfigure(4, minsize=10)
-
-    def load_splatnet_data(self):
-        stuffs = Splatnet.GesotownQuery(s3s.main(dict_key="GesotownQuery"))
-        return stuffs
 
     def configure_frames_splatnet(self):
         try:
@@ -836,7 +898,7 @@ GAME n°{game_id}
     
     def display_other_gears(self, gear, frame):
         name = gear["name"]
-        gear_type = gear["type"][0].lower() + gear["type"][1:]
+        gear_type = gear["type"]
         price = gear["price"]
         new_bonus = gear["ability"]
         end_time = gear["endTime"]
@@ -873,9 +935,7 @@ GAME n°{game_id}
         )
         end_time_label.grid(row=2, column=1, columnspan=3)
 
-
-
-    def display_daily_brand(self, splatnet_data: dict):
+    def display_splatnet(self, splatnet_data: dict):
         brand_name = splatnet_data["dailyBrand"]["name"]
         common_bonus = splatnet_data["dailyBrand"]["common"]
 
@@ -901,6 +961,9 @@ GAME n°{game_id}
         self.display_other_gears(splatnet_data["gearsOnSale"][4], self.other_frame_5)
         self.display_other_gears(splatnet_data["gearsOnSale"][5], self.other_frame_6)
        
+    def load_splatnet_data(self):
+        stuffs = parse_data.GesotownQuery(s3s.main(dict_key="GesotownQuery"))
+        return stuffs
 
     def splatnet_callback(self):
         self.configure_frames_splatnet()
@@ -934,9 +997,125 @@ GAME n°{game_id}
 
             self.update()
 
-            self.display_daily_brand(splatnet_data)
+            self.display_splatnet(splatnet_data)
         except:
             loading_label.configure(text="Connection error, \nplease try again later")
+
+    def display_best_power(self, stats):
+        best_power_label = customtkinter.CTkLabel(
+            master=self.best_power_frame,
+            text="Best Power",
+            font=self.FONT_LABEL
+        )
+        best_power_label.grid(row=1, column=2, columnspan=2)
+
+        for i,mode in enumerate(stats["bestPowers"]):
+            power = stats["bestPowers"][mode]["power"]
+            date = stats["bestPowers"][mode]["date"]
+
+            mode_label = customtkinter.CTkLabel(
+                master=self.best_power_frame,
+                text=mode,
+                # font=self.FONT_LABEL
+            )
+            mode_label.grid(row=2, column=i+1)
+            power_label = customtkinter.CTkLabel(
+                master=self.best_power_frame,
+                text=round(power, 1),
+                # font=self.FONT_LABEL
+            )
+            power_label.grid(row=3, column=i+1)
+            date_label = customtkinter.CTkLabel(
+                master=self.best_power_frame,
+                text=date[:10],
+                # font=self.FONT_LABEL
+            )
+            date_label.grid(row=4, column=i+1)
+
+    def display_season(self, season_name: dict):
+        translate_mode = {
+            "Splat Zones" : "Ar",
+            "Tower Control" : "Lf",
+            "Rainmaker" : "Gl",
+            "Clam Blitz" : "Cl",
+        }
+
+        stats = self.seasons_stats["seasons"][season_name]
+        for i,mode in enumerate(list(stats.keys())):
+            key = translate_mode[mode]
+            power = stats[mode]["power"+key]
+            rank = stats[mode]["rank"+key]
+
+            mode_label = customtkinter.CTkLabel(
+                master=self.current_power_frame,
+                text=mode,
+                # font=self.FONT_LABEL
+            )
+            mode_label.grid(row=2, column=i+1)
+            power_label = customtkinter.CTkLabel(
+                master=self.current_power_frame,
+                text=round(power, 1),
+                # font=self.FONT_LABEL
+            )
+            power_label.grid(row=3, column=i+1)
+            rank_label = customtkinter.CTkLabel(
+                master=self.current_power_frame,
+                text=rank,
+                # font=self.FONT_LABEL
+            )
+            rank_label.grid(row=4, column=i+1)
+
+    def display_my_stats(self, stats: dict):
+        self.configure_my_stats_frames()
+
+        self.display_best_power(stats)
+        best_power_label = customtkinter.CTkLabel(
+            master=self.current_power_frame,
+            text="Chose a Season",
+            font=self.FONT_LABEL
+        )
+        seasons_name = list(stats["seasons"].keys())
+
+        self.seasons_stats = stats
+
+        best_power_label.grid(row=1, column=1, columnspan=2)
+        self.seasons_option = customtkinter.CTkOptionMenu(
+            master=self.current_power_frame, 
+            dynamic_resizing=True,
+            values=seasons_name,
+            command=self.callback_seasons
+        )
+        self.seasons_option.grid(row=1, column=3, columnspan=2)
+
+    def callback_seasons(self, arg):
+        self.display_season(arg)
+
+    def load_my_stats(self):
+        stats =  parse_data.HistoryRecordQuery(s3s.main(dict_key="HistoryRecordQuery"))
+        return stats
+
+    def my_stats_callback(self):
+        loading_label = customtkinter.CTkLabel(
+            master=self,
+            text="Pulling data from Online\nmight take some time",
+            font=self.FONT_TITLE,
+            justify=tkinter.LEFT
+        )
+        loading_label.grid(row=0, column=1, columnspan=2)
+
+        self.update()
+
+        try:
+            stats = self.load_my_stats()
+            loading_label.destroy()
+
+            self.update()
+
+            self.display_my_stats(stats)
+
+        except:
+            loading_label.configure(text="Connection error, \nplease try again later")
+
 
     def setup_callback(self):
         try:
