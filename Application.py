@@ -30,6 +30,7 @@ class Application(customtkinter.CTk):
     FONT_BUTTON = ("Roboto Medium", 15) 
     FONT_LABEL = ("Roboto Medium", 18) 
     BIG_FONT = ("Roboto Medium", 23)
+    SMALL_FONT = ("Roboto Medium", 14)
     
     GAME_COLOR_FRAME = "#555555"
 
@@ -153,7 +154,7 @@ class Application(customtkinter.CTk):
             command=self.setup_callback,
             height=self.BUTTON_HEIGHT,
         )
-        self.setup_button.grid(row=2, column=0, pady=10, padx=20)
+        self.setup_button.grid(row=3, column=0, pady=10, padx=20)
 
 
         self.leave_button = customtkinter.CTkButton(
@@ -1016,19 +1017,19 @@ GAME n°{game_id}
             mode_label = customtkinter.CTkLabel(
                 master=self.best_power_frame,
                 text=mode,
-                # font=self.FONT_LABEL
+                font=self.SMALL_FONT
             )
             mode_label.grid(row=2, column=i+1)
             power_label = customtkinter.CTkLabel(
                 master=self.best_power_frame,
                 text=round(power, 1),
-                # font=self.FONT_LABEL
+                font=self.SMALL_FONT
             )
             power_label.grid(row=3, column=i+1)
             date_label = customtkinter.CTkLabel(
                 master=self.best_power_frame,
                 text=date[:10],
-                # font=self.FONT_LABEL
+                font=self.SMALL_FONT
             )
             date_label.grid(row=4, column=i+1)
 
@@ -1049,19 +1050,19 @@ GAME n°{game_id}
             mode_label = customtkinter.CTkLabel(
                 master=self.current_power_frame,
                 text=mode,
-                # font=self.FONT_LABEL
+                font=self.SMALL_FONT
             )
             mode_label.grid(row=2, column=i+1)
             power_label = customtkinter.CTkLabel(
                 master=self.current_power_frame,
                 text=round(power, 1),
-                # font=self.FONT_LABEL
+                font=self.SMALL_FONT
             )
             power_label.grid(row=3, column=i+1)
             rank_label = customtkinter.CTkLabel(
                 master=self.current_power_frame,
                 text=rank,
-                # font=self.FONT_LABEL
+                font=self.SMALL_FONT
             )
             rank_label.grid(row=4, column=i+1)
 
@@ -1086,6 +1087,7 @@ GAME n°{game_id}
             command=self.callback_seasons
         )
         self.seasons_option.grid(row=1, column=3, columnspan=2)
+        self.callback_seasons(seasons_name[0])
 
     def callback_seasons(self, arg):
         self.display_season(arg)

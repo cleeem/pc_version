@@ -13,7 +13,7 @@ import iksm, utils
 import customtkinter
 
 
-A_VERSION = "0.4.0"
+A_VERSION = "0.4.1"
 
 DEBUG = False
 
@@ -530,7 +530,7 @@ def main(bar=None, game_index = 1, use_account="", dict_key=""):
 
 # if __name__ == "__main__":
 # 	setup()
-# 	data = main()
+# 	data = main("HomeQuery")
 
 # 	from Game import Game
 
