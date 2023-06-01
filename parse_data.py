@@ -28,7 +28,8 @@ def GesotownQuery(result: dict):
             {
                 "name" : name,
                 "ability" : gear["gear"]["primaryGearPower"]["name"],
-                "price" : gear["price"]
+                "price" : gear["price"],
+                "type" : gear_type
             }
         )
     

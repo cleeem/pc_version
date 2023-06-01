@@ -865,7 +865,7 @@ GAME n°{game_id}
             return f"gears/shoesGear/{gear_name}.png"
 
     def display_daily_stuff(self, gear, i):
-        gear_type = ["headGear", "clothingGear", "shoesGear"][i]
+        gear_type = gear["type"]
         name = gear["name"] 
         price = gear["price"]
         new_bonus = gear["ability"]
@@ -992,15 +992,15 @@ GAME n°{game_id}
 
         self.update()
 
-        try:
-            splatnet_data = self.load_splatnet_data()
-            loading_label.destroy()
+        # try:
+        splatnet_data = self.load_splatnet_data()
+        loading_label.destroy()
 
-            self.update()
+        self.update()
 
-            self.display_splatnet(splatnet_data)
-        except:
-            loading_label.configure(text="Connection error, \nplease try again later")
+        self.display_splatnet(splatnet_data)
+        # except:
+        #     loading_label.configure(text="Connection error, \nplease try again later")
 
     def display_best_power(self, stats):
         best_power_label = customtkinter.CTkLabel(
